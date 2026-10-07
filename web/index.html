@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cryon DSGN — Procryon</title>
+<link rel="icon" href="/web/img/icona_192.png">
+<link rel="stylesheet" href="/web/app.css">
+</head>
+<body>
+<canvas id="scena"></canvas>
+<div id="grana"></div>
+
+<!-- INTRO -->
+<section id="intro" class="vista attiva">
+  <div class="intro-in">
+    <div class="intro-tit" id="introTit" aria-label="Cryon DSGN"></div>
+    <div class="intro-sub">Procryon · technical catalogue studio</div>
+  </div>
+  <button class="salta" id="salta">Entra →</button>
+</section>
+
+<!-- BARRA -->
+<header id="barra">
+  <button class="marchio" id="vaiHome" title="Libreria">
+    <span class="logo" data-svg="logo"></span><span class="sep"></span><span class="app">CRYON DSGN</span>
+  </button>
+  <nav class="briciole" id="briciole"></nav>
+  <div class="dx">
+    <button class="chip" id="grafica" title="Qualità grafica: automatica, leggera o piena"></button>
+    <span class="chip" id="statoDb">database</span>
+    <span class="chip mono" id="orologio"></span>
+  </div>
+</header>
+
+<!-- HOME / LIBRERIA -->
+<section id="home" class="vista">
+  <div class="home-testo">
+    <span class="pill cool">Design studio</span>
+    <h1>Cryon <span class="acc">DSGN</span></h1>
+    <p class="en">Cataloghi tecnici Procryon<br><span class="muted">Procryon technical catalogues</span></p>
+    <div class="numeri" id="numeri"></div>
+  </div>
+  <div class="scaffale-wrap">
+    <div class="scaffale-testa"><span class="lab">La libreria · The library</span><span class="lab muted" id="scaffaleInfo"></span>
+      <div class="frecce"><button id="scSx" aria-label="indietro">←</button><button id="scDx" aria-label="avanti">→</button></div></div>
+    <div class="scaffale" id="scaffale"></div>
+  </div>
+</section>
+
+<!-- SCHEDA CATALOGO -->
+<section id="catalogo" class="vista">
+  <div class="cat-sx"><div class="libro3d grande" id="libroGrande"></div></div>
+  <div class="cat-dx" id="catInfo"></div>
+</section>
+
+<!-- SFOGLIA -->
+<section id="sfoglia" class="vista">
+  <div class="sf-barra">
+    <button class="btn ghost" id="sfIndietro">← Indietro</button>
+    <div class="sf-tit" id="sfTit"></div>
+    <div class="sf-ctrl">
+      <select id="sfIndice" title="Vai alla sezione"></select>
+      <input id="sfCerca" placeholder="Codice o pagina…" autocomplete="off">
+      <span class="mono" id="sfPag">—</span>
+      <a class="btn ghost" id="sfPdf" target="_blank">PDF ↗</a>
+    </div>
+  </div>
+  <div class="sf-palco" id="sfPalco">
+    <button class="sf-freccia sx" id="sfPrev" aria-label="pagina precedente">‹</button>
+    <div class="libro" id="libro"></div>
+    <button class="sf-freccia dx" id="sfNext" aria-label="pagina successiva">›</button>
+    <div class="sf-carica" id="sfCarica"><div class="spinner"></div><span>Apro il catalogo…</span></div>
+  </div>
+  <div class="sf-piede"><input type="range" id="sfScorri" min="0" max="1" value="0"><span class="lab" id="sfScorriLab"></span></div>
+</section>
+
+<!-- SOTTO-CATALOGHI -->
+<section id="sotto" class="vista">
+  <div class="so-testa">
+    <div><span class="pill cool">Sotto-cataloghi</span><h2 id="soTit"></h2><p class="muted" id="soSub"></p></div>
+    <div class="so-filtri">
+      <div class="seg" id="soGas"></div>
+      <input id="soCerca" placeholder="Cerca codice o kW…" autocomplete="off">
+      <select id="soOrd"><option value="kw">Resa ↑</option><option value="kwd">Resa ↓</option><option value="eer">EER ↓</option><option value="cod">Codice</option></select>
+    </div>
+  </div>
+  <div class="griglia" id="soGriglia"></div>
+</section>
+
+<div id="velo"></div>
+<div id="toast"></div>
+<script type="module" src="/web/app.js"></script>
+</body>
+</html>

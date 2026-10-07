@@ -1,0 +1,25 @@
+{
+ "name": "Cryon DSGN — Procryon",
+ "short_name": "Cryon DSGN",
+ "description": "Cataloghi tecnici Procryon",
+ "lang": "it",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#161314",
+ "theme_color": "#161314",
+ "icons": [
+  {
+   "src": "web/img/icona_192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "web/img/icona_512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
