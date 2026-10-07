@@ -2,7 +2,7 @@
 // - l'interfaccia viene salvata alla prima apertura
 // - i cataloghi vengono salvati solo quando l'utente preme "Scarica per uso offline" (lo fa la pagina, nella cache CAT)
 // - pdf.js legge i PDF a pezzi: qui i pezzi vengono ritagliati dalla copia salvata
-const VERSIONE = '1.1.0-2026.10.1-ab68690bb0';
+const VERSIONE = '1.1.0-2026.10.2-f949c91fb2';
 const GUSCIO = 'cryon-guscio-' + VERSIONE, CAT = 'cryon-cat-v1';
 const FILE = ["index.html", "manifest.webmanifest", "dati/cataloghi.json", "web/app.css", "web/app.js", "web/font/Doto-Bold.ttf", "web/font/IBMPlexMono-Medium.woff2", "web/font/IBMPlexMono-Regular.woff2", "web/font/Inter-Regular.ttf", "web/font/Inter-SemiBold.ttf", "web/img/icona_192.png", "web/img/icona_512.png", "web/img/logo.svg", "web/img/pittogramma.svg", "web/index.html", "web/libro.js", "web/scena.js", "web/vendor/RoomEnvironment.js", "web/vendor/SVGLoader.js", "web/vendor/pdf.min.mjs", "web/vendor/pdf.worker.min.mjs", "web/vendor/three.module.min.js"];
 
