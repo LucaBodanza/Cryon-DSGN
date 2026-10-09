@@ -103,7 +103,7 @@ async function libreria() {
   const pronti = S.cataloghi.filter(c => c.stato === 'pronto').length;
   const conf = S.cataloghi.reduce((a, c) => a + (c.configurazioni || 0), 0);
   const pag = S.cataloghi.reduce((a, c) => a + (c.manifest?.pagine || 0), 0);
-  $('#numeri').innerHTML = `<div><b>13</b><span>serie · series</span></div><div><b>${conf}</b><span>configurazioni</span></div>
+  $('#numeri').innerHTML = `<div><b>${S.cataloghi.length}</b><span>serie · series</span></div><div><b>${conf}</b><span>configurazioni</span></div>
     <div><b>${pronti}</b><span>cataloghi pronti</span></div><div><b>${pag}</b><span>pagine generate</span></div>`;
   $('#scaffaleInfo').textContent = `${pronti} pronto · ${S.cataloghi.filter(c => c.stato === 'da generare').length} da generare · ${S.cataloghi.filter(c => c.stato === 'in arrivo').length} in arrivo`;
   $('#scSx').onclick = () => sc.scrollBy({ left: -560, behavior: 'smooth' });
