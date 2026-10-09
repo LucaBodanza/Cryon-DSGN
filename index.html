@@ -2,7 +2,6 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cryon DSGN — Procryon</title>
 <link rel="icon" href="web/img/icona_192.png">
@@ -13,10 +12,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cryon DSGN">
+<meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="web/app.css">
 </head>
 <body>
-<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.2" };
+<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.4" };
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
 <canvas id="scena"></canvas>
 <div id="grana"></div>
@@ -37,6 +37,7 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
   </button>
   <nav class="briciole" id="briciole"></nav>
   <div class="dx">
+    <button class="navb" id="nConfig">Configuratore</button>
     <button class="chip" id="grafica" title="Qualità grafica: automatica, leggera o piena"></button>
     <span class="chip" id="statoDb">database</span>
     <span class="chip mono" id="orologio"></span>
@@ -50,6 +51,7 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
     <h1>Cryon <span class="acc">DSGN</span></h1>
     <p class="en">Cataloghi tecnici Procryon<br><span class="muted">Procryon technical catalogues</span></p>
     <div class="numeri" id="numeri"></div>
+    <div class="home-az"><button class="btn" id="hConfig">Configuratore →</button></div>
   </div>
   <div class="scaffale-wrap">
     <div class="scaffale-testa"><span class="lab">La libreria · The library</span><span class="lab muted" id="scaffaleInfo"></span>
@@ -96,6 +98,55 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
     </div>
   </div>
   <div class="griglia" id="soGriglia"></div>
+</section>
+
+<!-- CONFIGURATORE -->
+<section id="config" class="vista">
+  <div class="cf-in">
+    <div class="cf-sx">
+      <span class="pill cool">Configuratore</span>
+      <h2>Configura il tuo chiller</h2>
+      <p class="muted">Dalle condizioni di progetto alla configurazione Procryon, agli optional, alla richiesta d'offerta. Prestazioni calcolate sulla matrice di resa di catalogo.</p>
+      <h4>1 · Condizioni di progetto</h4>
+      <div class="cf-campi">
+        <label>Potenza frigorifera richiesta (kW)<input id="cfKw" inputmode="decimal" value="100"></label>
+        <label>Acqua in uscita (°C)<input id="cfLwt" inputmode="decimal" value="7"></label>
+        <label>Salto termico (K)<input id="cfDt" inputmode="decimal" value="5"></label>
+        <label id="cfAmbW">Aria esterna (°C)<input id="cfAmb" inputmode="decimal" value="35"></label>
+        <label id="cfAcqW">Acqua al condensatore (°C) · serie W<input id="cfAcq" inputmode="decimal" value="30"></label>
+        <label>Fluido<select id="cfFluido"><option value="acqua">Acqua</option><option value="MEG">Glicole etilenico</option><option value="MPG">Glicole propilenico</option></select></label>
+        <label id="cfPctW">Percentuale glicole (%)<input id="cfPct" inputmode="numeric" value="30"></label>
+        <label>Quantità<input id="cfQta" inputmode="numeric" value="1"></label>
+      </div>
+      <h4>2 · Tipo di macchina</h4>
+      <div class="cf-campi">
+        <label>Condensazione<select id="cfCond"><option value="tutte">Indifferente</option><option value="A">Ad aria</option><option value="W">Ad acqua</option></select></label>
+        <label>Compressori<select id="cfComp"><option value="tutti">Indifferente</option><option value="Scroll">Scroll</option><option value="Vite">A vite</option></select></label>
+        <label>Free cooling<select id="cfFree"><option value="tutti">Indifferente</option><option value="si">Sì</option><option value="no">No</option></select></label>
+        <label>Refrigerante GWP<select id="cfGwp"><option value="0">Tutti</option><option value="750">sotto 750 (UE oltre 12 kW, 2027)</option><option value="150">sotto 150 (UE fino a 12 kW, 2027)</option></select></label>
+        <label class="cf-chk"><input type="checkbox" id="cfDry"> includi dry cooler (PRO-DRY)</label>
+      </div>
+      <div class="lab">Serie</div><div class="fv cf-chips" id="cfSerie"></div>
+      <div class="lab">Esecuzione</div><div class="fv cf-chips" id="cfVar"></div>
+      <div class="lab">Refrigerante</div><div class="fv cf-chips" id="cfGas"></div>
+      <h4>4 · Dati per la richiesta</h4>
+      <div class="cf-campi">
+        <label>Azienda *<input id="cfAz" autocomplete="organization"></label>
+        <label>Referente<input id="cfRef" autocomplete="name"></label>
+        <label>E-mail<input id="cfMail" type="email" autocomplete="email"></label>
+        <label>Telefono<input id="cfTel" autocomplete="tel"></label>
+        <label>Paese / località<input id="cfPaese"></label>
+        <label>Progetto / riferimento<input id="cfProg"></label>
+        <label class="cf-larga">Note (per X / CTO descrivi qui le richieste speciali)<textarea id="cfNote" rows="3"></textarea></label>
+      </div>
+      <div class="cf-usc"><button class="btn" id="cfPdf">Richiesta d'offerta PDF</button><button class="btn ghost" id="cfCsv">Riga CRM / Excel (CSV)</button></div>
+    </div>
+    <div class="cf-dx">
+      <h4>3 · Configurazioni adatte</h4>
+      <div id="cfRis"></div>
+      <div id="cfScelta"></div>
+    </div>
+  </div>
 </section>
 
 <div id="velo"></div>

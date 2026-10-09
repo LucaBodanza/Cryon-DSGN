@@ -275,3 +275,67 @@ body.v-sfoglia #barra { opacity: 0; pointer-events: none; }
   .so-filtri { margin-left: 0; flex-wrap: wrap; }
   .so-filtri input { flex: 1; min-width: 140px; }
 }
+
+/* ---------- configuratore (Cryon DSGN) */
+.navb { background: none; border: 1px solid var(--line2); border-radius: 99px; padding: 4px 13px; font-size: 12.5px; color: var(--ink); transition: border-color .2s, color .2s, background .2s; }
+.navb:hover { border-color: var(--accent); color: var(--accent); }
+.home-az { display: flex; gap: 10px; margin-top: 26px; }
+.et { display: inline-block; font-family: "Plex Mono", monospace; font-size: 10.5px; letter-spacing: .04em; border: 1px solid var(--line2); border-radius: 6px; padding: 2px 7px; color: var(--ink2); white-space: nowrap; }
+.ets { display: flex; flex-wrap: wrap; gap: 5px; }
+.fv { display: flex; flex-wrap: wrap; gap: 5px; }
+.fc { background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 12.5px; color: var(--ink); display: inline-flex; gap: 7px; align-items: baseline; max-width: 100%; text-align: left; }
+.fc i { font-style: normal; font-size: 10.5px; color: var(--muted); font-family: "Plex Mono", monospace; }
+.fc:hover { border-color: var(--accent); }
+.fc.on { background: var(--accent); border-color: var(--accent); color: #1a1206; font-weight: 600; }
+.fc.piu { color: var(--accent); background: none; border-style: dashed; }
+.pr { display: grid; grid-template-columns: 26px 1fr auto; gap: 14px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; background: linear-gradient(170deg, var(--bg2), var(--bg1)); cursor: pointer; transition: border-color .2s; }
+.pr:hover { border-color: var(--line2); }
+.pr.sel { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.pc { min-width: 0; }
+.cod { font-family: "Plex Mono", monospace; font-size: 15.5px; font-weight: 500; letter-spacing: .01em; user-select: text; }
+.cod span { margin-left: 12px; font-size: 12.5px; color: var(--cool); font-weight: 400; }
+.pd { text-align: right; }
+.pr .az, .fam .az { display: flex; gap: 6px; justify-content: flex-end; }
+.pr .az button, .fam .az button { font-size: 12px; padding: 7px 11px; border-radius: 8px; border: 1px solid var(--line2); background: none; color: var(--ink2); white-space: nowrap; }
+.pr .az button:hover, .fam .az button:hover { border-color: var(--accent); color: var(--accent); }
+.pr .az button.pri, .fam .az button.pri { background: var(--accent); border-color: var(--accent); color: #1a1206; font-weight: 600; }
+.pr .az button.pri:hover, .fam .az button.pri:hover { background: var(--accent2); color: #1a1206; }
+.ai-nota { margin-top: 10px; font-size: 13px; color: var(--ink2); }
+.ai-testa { display: flex; align-items: center; gap: 8px; margin: 24px 2px 12px; font-size: 14px; color: var(--ink2); }
+.ai-testa b { color: var(--ink); font-family: "Plex Mono", monospace; }
+.vuoto { padding: 40px 10px; color: var(--ink2); text-align: center; display: grid; gap: 14px; justify-items: center; }
+#config { overflow: auto; padding: 88px 4vw 60px; }
+.cf-in { display: grid; grid-template-columns: minmax(340px, 470px) 1fr; gap: 34px; max-width: 1500px; margin: 0 auto; }
+.cf-sx h2 { font-size: clamp(28px, 3vw, 40px); margin: 12px 0 8px; font-weight: 600; letter-spacing: -.02em; }
+.cf-sx h4, .cf-dx h4 { font-family: "Plex Mono", monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 26px 0 10px; font-weight: 500; }
+.cf-campi { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+.cf-campi label { display: grid; gap: 5px; font-size: 12px; color: var(--ink2); }
+.cf-campi input, .cf-campi select, .cf-campi textarea { background: var(--bg1); border: 1px solid var(--line2); border-radius: 9px; padding: 9px 11px; color: var(--ink); font-size: 14px; outline: none; }
+.cf-campi input:focus, .cf-campi select:focus, .cf-campi textarea:focus { border-color: var(--accent); }
+.cf-larga { grid-column: 1 / -1; }
+.cf-chk { display: flex !important; align-items: center; gap: 8px; grid-column: 1 / -1; }
+.cf-sx > .lab { margin: 14px 0 6px; }
+.cf-chips .fc { display: inline-grid; gap: 1px; padding: 6px 10px; }
+.cf-chips .fc span { font-size: 10.5px; color: var(--muted); font-family: "Plex Mono", monospace; }
+.cf-chips .fc.on span { color: rgba(26,18,6,.7); }
+.cf-usc { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.cf-dx .pr { grid-template-columns: 1fr auto; }
+.cf-dx .cod span { color: var(--ink2); }
+#cfScelta { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 18px; }
+.cf-testa { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+.cf-testa h3 { font-family: "Plex Mono", monospace; font-size: 24px; margin: 10px 0 4px; font-weight: 500; }
+.cf-dati { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0; }
+.cf-dati div { background: var(--bg1); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.cf-dati b { display: block; font-family: "Plex Mono", monospace; font-size: 16px; }
+.cf-dati span { font-size: 11px; color: var(--ink2); }
+.cf-std summary { cursor: pointer; color: var(--ink2); font-size: 13px; }
+.cf-std ul { columns: 2; font-size: 12.5px; color: var(--ink2); }
+.cf-gr { margin: 12px 0; }
+.cf-gr .lab { margin-bottom: 6px; }
+.cf-o { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+.cf-o:hover { background: var(--bg2); }
+.cf-o input { accent-color: var(--accent); margin-top: 2px; }
+@media (max-width: 1000px) { .cf-in { grid-template-columns: 1fr; } .cf-dati { grid-template-columns: 1fr 1fr; } #config { padding: 80px 16px 40px; } }
+
+#config { background: rgba(22,19,20,.9); }
+body.v-config #barra { background: rgba(22,19,20,.94); backdrop-filter: blur(8px); padding-top: 14px; padding-bottom: 14px; }

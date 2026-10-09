@@ -1,6 +1,7 @@
 // CRYON DSGN — logica dell'interfaccia: intro, libreria, scheda catalogo, sfoglia, sotto-cataloghi
 import { avviaScena } from './scena.js';
 import { Libro } from './libro.js';
+import { avviaConfiguratore, apriConfiguratore } from './configuratore.js';
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -51,7 +52,17 @@ function briciole() {
   if (c && ['catalogo', 'sfoglia', 'sotto'].includes(S.vista)) p.push(`<b>${esc(String(c.numero).padStart(2, '0'))} · ${esc(c.nome)}</b>`);
   if (S.vista === 'sfoglia') p.push(`<span>${S.sfFonte?.sotto ? esc(S.sfFonte.sotto) : 'Catalogo completo'}</span>`);
   if (S.vista === 'sotto') p.push('<span>Sotto-cataloghi</span>');
+  if (S.vista === 'config') p.push('<b>Configuratore</b>');
   b.innerHTML = p.join('<span class="muted">/</span>');
+}
+
+// scheda di una configurazione nel suo catalogo (dal configuratore)
+async function apriScheda(codice, serie) {
+  const c = S.cataloghi.find(x => x.manifest?.sotto?.some(z => z.codice === codice));
+  if (!c) { toast('Scheda non trovata nei cataloghi installati'); return; }
+  const m = c.manifest, z = m.sotto.find(x => x.codice === codice);
+  S.cur = c;
+  sfoglia({ url: `cat/${encodeURI(m.slug)}/${encodeURI(z.file)}`, titolo: codice, sotto: codice });
 }
 
 // ================================================================ intro
@@ -382,6 +393,8 @@ function vita() {   // la finestra-app tiene acceso il server; alla chiusura lo 
   grafica();
   $('#vaiHome').onclick = () => { S.storia = []; vai('home', { push: false }); };
   document.querySelector('[data-svg="logo"]').innerHTML = await svg('logo');
+  avviaConfiguratore({ S, WEB, vai, toast, apriScheda });
+  for (const id of ['#hConfig', '#nConfig']) $(id).onclick = () => apriConfiguratore();
   sfogliaEventi(); stato(); orologio(); setInterval(orologio, 30000); vita();
   await libreria();
 })();
