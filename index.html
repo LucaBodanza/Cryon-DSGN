@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="web/app.css">
 </head>
 <body>
-<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.4" };
+<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.5" };
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
 <canvas id="scena"></canvas>
 <div id="grana"></div>
@@ -30,6 +30,20 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
   <button class="salta" id="salta">Entra →</button>
 </section>
 
+<!-- MENU INIZIALE -->
+<section id="menu" class="vista">
+  <div class="mn-in">
+    <span class="pill cool">Da dove partiamo?</span>
+    <h2>Che chiller stai cercando?</h2>
+    <p class="en">Scegli il tipo di macchina: ti mostriamo solo le serie giuste e prepariamo il configuratore.<br><span class="muted">Choose the machine type: we show only the matching series and pre-set the configurator.</span></p>
+    <div class="mn-gruppo"><div class="lab">1 · Tipologia di condensazione <span class="muted">· Condensation</span></div><div class="mn-opz" id="mnCond"></div></div>
+    <div class="mn-gruppo"><div class="lab">2 · Tipologia di gas <span class="muted">· Refrigerant</span></div><div class="mn-opz" id="mnGas"></div></div>
+    <div class="mn-gruppo"><div class="lab">3 · Tipologia di compressore <span class="muted">· Compressor</span></div><div class="mn-opz" id="mnComp"></div></div>
+    <div class="mn-ris" id="mnRis"></div>
+    <div class="mn-az"><button class="btn" id="mnVai">Mostra le serie →</button><button class="btn ghost" id="mnConf">Apri il configuratore →</button><button class="btn ghost" id="mnTutto">Mostra tutto</button></div>
+  </div>
+</section>
+
 <!-- BARRA -->
 <header id="barra">
   <button class="marchio" id="vaiHome" title="Libreria">
@@ -37,6 +51,7 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
   </button>
   <nav class="briciole" id="briciole"></nav>
   <div class="dx">
+    <button class="navb" id="nScelte">Scelta macchina</button>
     <button class="navb" id="nConfig">Configuratore</button>
     <button class="chip" id="grafica" title="Qualità grafica: automatica, leggera o piena"></button>
     <span class="chip" id="statoDb">database</span>
@@ -51,6 +66,7 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
     <h1>Cryon <span class="acc">DSGN</span></h1>
     <p class="en">Cataloghi tecnici Procryon<br><span class="muted">Procryon technical catalogues</span></p>
     <div class="numeri" id="numeri"></div>
+    <div class="filtro-att" id="filtroAtt"></div>
     <div class="home-az"><button class="btn" id="hConfig">Configuratore →</button></div>
   </div>
   <div class="scaffale-wrap">
