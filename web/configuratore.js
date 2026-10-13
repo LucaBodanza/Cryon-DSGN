@@ -8,7 +8,7 @@ const kwt = v => num(v, v < 100 ? 1 : 0);
 const VAR = { S: ['Standard · condensatore a micro-canali', 'micro-canali'], C: ['Standard · condensatore rame-alluminio', 'rame-alluminio'], X: ['Esecuzione speciale · CTO (Configure To Order)', 'CTO'] };
 const vt = (sid, v, i = 0) => ((v !== 'X' && C.D?.S?.[sid]?.testi_varianti?.[v]) || VAR[v] || ['', ''])[i];
 const VAR_W = { S: ['Standard · condensatore a piastre', 'standard'] };
-const C = { D: null, ctx: null, serie: new Set(), varianti: new Set(['S', 'C']), gas: new Set(), gwp: 0, sel: null, opt: new Set(), lista: [] };
+const C = { preset: null, D: null, ctx: null, serie: new Set(), varianti: new Set(['S', 'C']), gas: new Set(), gwp: 0, sel: null, opt: new Set(), lista: [] };
 
 async function dati() {
   if (C.D) return C.D;
@@ -225,9 +225,22 @@ function scarica(byte, nome, tipo) {
 
 // ---------------------------------------------------------------- eventi
 function aggiorna() { disegnaFiltri(); disegnaRisultati(); disegnaScelta(); }
-export async function apriConfiguratore() {
+// Le scelte del menu iniziale (condensazione · gas · compressore) preimpostano i filtri; se non cambiano non si toccano le modifiche fatte a mano.
+function preimposta(p) {
+  const chiave = p ? `${p.cond}|${p.gas}|${p.comp}` : null;
+  if (!p || chiave === C.preset) return;
+  C.preset = chiave;
+  $('#cfCond').value = p.cond === 'tutte' ? 'tutte' : p.cond;
+  $('#cfComp').value = p.comp === 'tutti' ? 'tutti' : p.comp;
+  $('#cfFree').value = 'tutti';
+  C.gas = new Set(p.gas === 'tutti' ? [] : [p.gas]);
+  C.serie.clear(); C.sel = null; C.opt.clear();
+  $('#cfDry').checked = false;
+}
+export async function apriConfiguratore(preset) {
   C.ctx.vai('config');
   try { await dati(); } catch (e) { $('#cfRis').innerHTML = `<div class="vuoto">${esc(e.message)}</div>`; return; }
+  preimposta(preset);
   aggiorna();
 }
 export function avviaConfiguratore(ctx) {

@@ -27,7 +27,7 @@ const ICON = {
   griglia: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="10" height="10" rx="2"/><rect x="18" y="4" width="10" height="10" rx="2"/><rect x="4" y="18" width="10" height="10" rx="2"/><rect x="18" y="18" width="10" height="10" rx="2"/></svg>',
 };
 
-const S = { cataloghi: [], cur: null, vista: 'intro', storia: [], libro: null, sfFonte: null, gas: 'tutti' };
+const S = { cataloghi: [], cur: null, vista: 'intro', storia: [], libro: null, sfFonte: null, gas: 'tutti', scelte: { cond: 'tutte', gas: 'tutti', comp: 'tutti' } };
 let scena = null;
 
 // ================================================================ viste
@@ -48,7 +48,8 @@ function indietro() {
 function briciole() {
   const b = $('#briciole'), c = S.cur;
   const p = [];
-  if (S.vista !== 'home' && S.vista !== 'intro') p.push('<span>Libreria</span>');
+  if (S.vista === 'menu') p.push('<b>Scelta macchina</b>');
+  else if (S.vista !== 'home' && S.vista !== 'intro') p.push('<span>Libreria</span>');
   if (c && ['catalogo', 'sfoglia', 'sotto'].includes(S.vista)) p.push(`<b>${esc(String(c.numero).padStart(2, '0'))} · ${esc(c.nome)}</b>`);
   if (S.vista === 'sfoglia') p.push(`<span>${S.sfFonte?.sotto ? esc(S.sfFonte.sotto) : 'Catalogo completo'}</span>`);
   if (S.vista === 'sotto') p.push('<span>Sotto-cataloghi</span>');
@@ -69,7 +70,7 @@ async function apriScheda(codice, serie) {
 function intro() {
   const t = 'CRYON DSGN';
   $('#introTit').innerHTML = [...t].map((ch, i) => `<span class="${i > 5 ? 'a' : ''}" style="animation-delay:${0.9 + i * 0.07}s">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
-  const entra = () => { if (S.vista === 'intro') vai('home', { push: false }); };
+  const entra = () => { if (S.vista === 'intro') vai('menu', { push: false }); };
   $('#salta').onclick = entra;
   $('#intro').addEventListener('click', entra);
   addEventListener('keydown', e => { if (S.vista === 'intro') entra(); }, { once: true });
@@ -106,6 +107,7 @@ async function libreria() {
   $('#numeri').innerHTML = `<div><b>${S.cataloghi.length}</b><span>serie · series</span></div><div><b>${conf}</b><span>configurazioni</span></div>
     <div><b>${pronti}</b><span>cataloghi pronti</span></div><div><b>${pag}</b><span>pagine generate</span></div>`;
   $('#scaffaleInfo').textContent = `${pronti} pronto · ${S.cataloghi.filter(c => c.stato === 'da generare').length} da generare · ${S.cataloghi.filter(c => c.stato === 'in arrivo').length} in arrivo`;
+  disegnaMenu(); filtroScaffale();
   $('#scSx').onclick = () => sc.scrollBy({ left: -560, behavior: 'smooth' });
   $('#scDx').onclick = () => sc.scrollBy({ left: 560, behavior: 'smooth' });
   sc.addEventListener('wheel', e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { sc.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
@@ -297,7 +299,7 @@ function sfogliaEventi() {
     else toast('Nessuna configurazione trovata');
   };
   addEventListener('keydown', e => {
-    if (e.key === 'Escape' && S.vista !== 'home' && S.vista !== 'intro') { e.target.blur?.(); return indietro(); }
+    if (e.key === 'Escape' && S.vista !== 'home' && S.vista !== 'intro' && S.vista !== 'menu') { e.target.blur?.(); return indietro(); }
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
     if (S.vista === 'sfoglia') {
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); S.libro.gira(1); }
@@ -344,6 +346,91 @@ function disegnaGriglia() {
       sfoglia({ url: `${base}/${encodeURI(x.file)}`, titolo: x.codice, sotto: x.codice });
     });
   });
+}
+
+
+// ================================================================ menu iniziale: condensazione · gas · compressore
+// Profilo di ogni serie (stessa logica del configuratore: condensazione A/W, compressore Scroll/Vite, dry cooler senza compressori né gas)
+const PROFILO = {
+  'PRO-A': { cond: 'A', comp: 'Scroll' }, 'PRO-W': { cond: 'W', comp: 'Scroll' },
+  'PROS-A': { cond: 'A', comp: 'Vite' }, 'PROS-W': { cond: 'W', comp: 'Vite' },
+  'F-PRO': { cond: 'A', comp: 'Scroll', fc: true }, 'F-PROS': { cond: 'A', comp: 'Vite', fc: true },
+  'PRO-DRY': { cond: 'A', comp: null, dry: true },
+};
+const idSerie = c => String(c.nome || '').replace(/^Serie\s+/, '');
+const profilo = c => PROFILO[idSerie(c)] || null;
+const ORDINE_GAS = ['R410A', 'R32', 'R454B', 'R134A', 'R513A', 'R1234ZE'];
+const gasDi = c => (c.gas || []).filter(Boolean);
+function leggiScelte() {
+  try { const j = JSON.parse(localStorage.getItem('cryon.scelte') || 'null'); if (j && typeof j === 'object') return { cond: j.cond || 'tutte', gas: j.gas || 'tutti', comp: j.comp || 'tutti' }; } catch (e) { /* nessuna scelta salvata */ }
+  return { cond: 'tutte', gas: 'tutti', comp: 'tutti' };
+}
+function salvaScelte() { try { localStorage.setItem('cryon.scelte', JSON.stringify(S.scelte)); } catch (e) { /* preferenza non salvata */ } }
+const attive = sc => sc.cond !== 'tutte' || sc.gas !== 'tutti' || sc.comp !== 'tutti';
+// una serie risponde alle scelte? (dry cooler: non ha compressori né gas → resta solo se non li hai scelti)
+function corrisponde(c, sc = S.scelte) {
+  const p = profilo(c); if (!p) return !attive(sc);
+  if (sc.cond !== 'tutte' && p.cond !== sc.cond) return false;
+  if (sc.comp !== 'tutti' && p.comp !== sc.comp) return false;
+  if (sc.gas !== 'tutti' && !gasDi(c).includes(sc.gas)) return false;
+  return true;
+}
+const serieOk = sc => S.cataloghi.filter(c => corrisponde(c, sc));
+function etichettaScelte(sc = S.scelte) {
+  const L = [];
+  if (sc.cond !== 'tutte') L.push(sc.cond === 'A' ? 'Condensazione ad aria' : 'Condensazione ad acqua');
+  if (sc.gas !== 'tutti') L.push(sc.gas);
+  if (sc.comp !== 'tutti') L.push(sc.comp === 'Vite' ? 'Compressori a vite' : 'Compressori scroll');
+  return L;
+}
+function disegnaMenu() {
+  const sc = S.scelte;
+  const gas = [...new Set(S.cataloghi.flatMap(gasDi))].sort((a, b) => (ORDINE_GAS.indexOf(a) + 99) % 99 - (ORDINE_GAS.indexOf(b) + 99) % 99);
+  const gruppi = [
+    ['#mnCond', 'cond', [['tutte', 'Indifferente', 'any'], ['A', 'Aria', 'air-cooled'], ['W', 'Acqua', 'water-cooled']]],
+    ['#mnGas', 'gas', [['tutti', 'Indifferente', 'any'], ...gas.map(g => [g, g, ''])]],
+    ['#mnComp', 'comp', [['tutti', 'Indifferente', 'any'], ['Scroll', 'Scroll', 'scroll'], ['Vite', 'A vite', 'screw']]],
+  ];
+  for (const [sel, chiave, opz] of gruppi) {
+    $(sel).innerHTML = opz.map(([v, it, en]) => {
+      const prova = { ...sc, [chiave]: v };
+      const n = serieOk(prova).length;
+      const off = v !== opz[0][0] && n === 0;       // combinazione impossibile con le altre due scelte
+      return `<button class="mn-o ${sc[chiave] === v ? 'on' : ''}" data-k="${chiave}" data-v="${esc(v)}" ${off ? 'disabled title="Nessuna serie con le altre scelte"' : ''}><b>${esc(it)}</b>${en ? `<span>${esc(en)}</span>` : ''}</button>`;
+    }).join('');
+  }
+  const ok = serieOk(sc), et = etichettaScelte();
+  $('#mnRis').innerHTML = `<div class="mn-n"><b>${ok.length}</b><span>${ok.length === 1 ? 'serie' : 'serie'} · ${ok.length === 1 ? 'series' : 'series'}${et.length ? ' · ' + esc(et.join(' · ')) : ' · tutte le macchine'}</span></div>
+    <div class="mn-serie">${ok.map(c => `<span class="pill">${esc(idSerie(c))}</span>`).join('') || '<span class="muted">Nessuna serie con queste scelte</span>'}</div>`;
+  $('#mnVai').disabled = !ok.length;
+  document.querySelectorAll('#menu .mn-o').forEach(b => b.onclick = () => {
+    S.scelte[b.dataset.k] = b.dataset.v;
+    // se una scelta fatta prima non è più compatibile, torna a "indifferente"
+    for (const [, k, o] of gruppi) if (k !== b.dataset.k && S.scelte[k] !== o[0][0] && !serieOk(S.scelte).length) S.scelte[k] = o[0][0];
+    salvaScelte(); disegnaMenu();
+  });
+}
+function filtroScaffale() {
+  const sc = $('#scaffale'); if (!sc) return;
+  const ok = new Set(serieOk(S.scelte).map(c => c.numero));
+  sc.querySelectorAll('.libro3d').forEach(el => el.classList.toggle('filtrato', !ok.has(+el.dataset.n)));
+  const et = etichettaScelte();
+  $('#filtroAtt').innerHTML = et.length
+    ? `<span class="lab">Filtri attivi</span> ${et.map(t => `<span class="pill cool">${esc(t)}</span>`).join(' ')} <button class="btn ghost mini" id="fCambia">Cambia</button> <button class="btn ghost mini" id="fAzzera">Mostra tutto</button>`
+    : '';
+  $('#fCambia')?.addEventListener('click', () => apriMenu());
+  $('#fAzzera')?.addEventListener('click', () => { S.scelte = { cond: 'tutte', gas: 'tutti', comp: 'tutti' }; salvaScelte(); filtroScaffale(); });
+  const n = ok.size;
+  $('#scaffaleInfo').textContent = et.length ? `${n} ${n === 1 ? 'serie' : 'serie'} su ${S.cataloghi.length}` : `${S.cataloghi.length} serie`;
+  if (et.length) sc.scrollTo({ left: 0 });
+}
+function apriMenu() { disegnaMenu(); vai('menu'); }
+function avviaMenu() {
+  S.scelte = leggiScelte();
+  $('#mnVai').onclick = () => { filtroScaffale(); vai('home', { push: false }); S.storia = []; };
+  $('#mnConf').onclick = () => apriConfiguratore(S.scelte);
+  $('#mnTutto').onclick = () => { S.scelte = { cond: 'tutte', gas: 'tutti', comp: 'tutti' }; salvaScelte(); filtroScaffale(); vai('home', { push: false }); S.storia = []; };
+  $('#nScelte').onclick = apriMenu;
 }
 
 // ================================================================ qualità grafica (automatica / leggera / piena)
@@ -394,7 +481,8 @@ function vita() {   // la finestra-app tiene acceso il server; alla chiusura lo 
   $('#vaiHome').onclick = () => { S.storia = []; vai('home', { push: false }); };
   document.querySelector('[data-svg="logo"]').innerHTML = await svg('logo');
   avviaConfiguratore({ S, WEB, vai, toast, apriScheda });
-  for (const id of ['#hConfig', '#nConfig']) $(id).onclick = () => apriConfiguratore();
+  avviaMenu();
+  for (const id of ['#hConfig', '#nConfig']) $(id).onclick = () => apriConfiguratore(S.scelte);
   sfogliaEventi(); stato(); orologio(); setInterval(orologio, 30000); vita();
   await libreria();
 })();
