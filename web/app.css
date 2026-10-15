@@ -430,7 +430,9 @@ body.v-listinoEd #barra { background: rgba(22,19,20,.96); }
   #listinoEd { position: static !important; opacity: 1 !important; padding: 0 !important; background: #fff !important; overflow: visible !important; }
   .le-barra { display: none !important; }
   .le-doc { width: auto; max-width: none; margin: 0; padding: 0; box-shadow: none; font-size: 9pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .le-cop { height: 296mm; margin: 0; page-break-after: always; }
-  .le-sez { page-break-before: always; } .le-gas + .le-gas { page-break-before: always; }
-  .le-tb input { display: none; } .le-st { display: inline; } .le-tb tr { page-break-inside: avoid; }
+  .le-doc .lr-cop { margin: 0; }
 }
+
+.le-doc .lr-cop { margin: -14mm -13mm 10mm; }
+.le-doc .lr-sez, .le-doc .lr-indice, .le-doc .lr-div, .le-doc .lr-app { margin-top: 12mm; padding-top: 6mm; border-top: 1px dashed #CFCBCA; }
+@media print { .le-doc .lr-sez, .le-doc .lr-indice, .le-doc .lr-div, .le-doc .lr-app { margin-top: 0; padding-top: 0; border-top: 0; } }

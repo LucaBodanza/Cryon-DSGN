@@ -5,7 +5,7 @@
   "titolo": "Listino completo 2026",
   "sotto": "Tutte le serie Procryon",
   "file": "Listino_Procryon_2026_COMPLETO.pdf",
-  "pagine": 208
+  "pagine": 62
  },
  "serie": [
   {
@@ -14,7 +14,7 @@
    "titolo": "Listino Serie PRO-A",
    "sotto": "Refrigeratori d'acqua condensati ad aria · compressori scroll · varianti S micro-canali e C rame-alluminio",
    "file": "Listino_Procryon_2026_01_PRO-A.pdf",
-   "pagine": 80
+   "pagine": 20
   },
   {
    "numero": "02",
@@ -22,7 +22,7 @@
    "titolo": "Listino Serie PRO-W",
    "sotto": "Refrigeratori d'acqua condensati ad acqua · compressori scroll · installazione interna",
    "file": "Listino_Procryon_2026_02_PRO-W.pdf",
-   "pagine": 17
+   "pagine": 8
   },
   {
    "numero": "03",
@@ -30,7 +30,7 @@
    "titolo": "Listino Serie PROS-A",
    "sotto": "Refrigeratori d'acqua condensati ad aria · compressori a vite · varianti S micro-canali e C rame-alluminio",
    "file": "Listino_Procryon_2026_03_PROS-A.pdf",
-   "pagine": 45
+   "pagine": 9
   },
   {
    "numero": "04",
@@ -38,7 +38,7 @@
    "titolo": "Listino Serie PROS-W",
    "sotto": "Refrigeratori d'acqua condensati ad acqua · compressori a vite · installazione interna",
    "file": "Listino_Procryon_2026_04_PROS-W.pdf",
-   "pagine": 17
+   "pagine": 8
   },
   {
    "numero": "05",
@@ -46,7 +46,7 @@
    "titolo": "Listino Serie F-PRO",
    "sotto": "Refrigeratori d'acqua ad aria con free cooling integrato · compressori scroll · varianti S e C",
    "file": "Listino_Procryon_2026_05_F-PRO.pdf",
-   "pagine": 26
+   "pagine": 8
   },
   {
    "numero": "06",
@@ -54,7 +54,7 @@
    "titolo": "Listino Serie F-PROS",
    "sotto": "Refrigeratori d'acqua ad aria con free cooling integrato · compressori a vite · varianti S e C",
    "file": "Listino_Procryon_2026_06_F-PROS.pdf",
-   "pagine": 32
+   "pagine": 8
   },
   {
    "numero": "07",

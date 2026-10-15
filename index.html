@@ -14,9 +14,11 @@
 <meta name="apple-mobile-web-app-title" content="Cryon DSGN">
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="web/app.css">
+<link rel="stylesheet" href="web/listino.css">
+<script src="web/listino_render.js"></script>
 </head>
 <body>
-<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.7" };
+<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.8" };
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
 <canvas id="scena"></canvas>
 <div id="grana"></div>
@@ -101,7 +103,7 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
     <button class="btn mini" id="leStampa">Scarica PDF</button>
     <span class="lab muted" id="leConta"></span>
   </div>
-  <div class="le-doc" id="leDoc"></div>
+  <div class="le-doc lr" id="leDoc"></div>
 </section>
 
 <!-- SCHEDA CATALOGO -->

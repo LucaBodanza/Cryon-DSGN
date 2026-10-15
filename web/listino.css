@@ -1,0 +1,46 @@
+/* Listino prezzi Procryon — stile comune app + PDF (copertina scura, interno bianco/nero/arancio) */
+.lr { font-family: "Inter", Arial, sans-serif; color: #231F20; font-size: 8.3pt; line-height: 1.35; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.lr .pill { display: inline-block; font-family: "Plex Mono", monospace; font-size: 6.6pt; letter-spacing: .1em; text-transform: uppercase; border: 1px solid #A8A3A4; color: #fff; border-radius: 4px; padding: 1.5px 7px; margin: 0 4px 4px 0; }
+.lr .pill.acc { border-color: #F29C1F; color: #F29C1F; }
+.lr-cop { position: relative; height: 296mm; background: #231F20; color: #fff; overflow: hidden; break-after: page; }
+.lr-cop .dots { position: absolute; inset: 0; background-image: radial-gradient(circle, #4A4546 .32mm, transparent .4mm); background-size: 5.2mm 5.2mm; background-position: 2.6mm 2.6mm; }
+.lr-cop .logo { position: absolute; left: 14mm; top: 14mm; width: 52mm; color: #fff; } .lr-cop .picto { position: absolute; right: 18mm; top: 40mm; width: 62mm; color: #F29C1F; }
+.lr-cop svg { width: 100%; height: auto; display: block; }
+.lr-cop .in { position: absolute; left: 14mm; right: 14mm; bottom: 24mm; }
+.lr-cop .num { font-family: "Doto", monospace; font-size: 64pt; line-height: .9; color: #A8A3A4; }
+.lr-cop .lab { font-family: "Plex Mono", monospace; font-size: 7pt; letter-spacing: .12em; text-transform: uppercase; color: #A8A3A4; margin: 4mm 0 2mm; }
+.lr-cop h1 { font-size: 36pt; line-height: 1.02; margin: 0 0 3mm; font-weight: 600; } .lr-cop .sub { color: #A8A3A4; font-size: 10pt; max-width: 150mm; margin-bottom: 6mm; }
+.lr-cop .claim { position: absolute; right: 14mm; bottom: 12mm; text-align: right; font-size: 7pt; color: #7D7879; }
+.lr-tit { display: flex; align-items: baseline; gap: 10px; border-bottom: 2px solid #F29C1F; padding-bottom: 6px; margin-bottom: 8mm; }
+.lr-tit h2 { font-size: 24pt; margin: 0; } .lr-tit span { color: #8a8384; font-size: 10pt; }
+.lr-indice, .lr-app { break-before: page; padding: 2mm 0; }
+.lr-ic { display: grid; grid-template-columns: 22mm 1fr; gap: 4mm; border-bottom: 1px solid #E6E2E1; padding: 4mm 0; }
+.lr-ic .n, .lr-div .n { font-family: "Doto", monospace; font-size: 30pt; color: #F29C1F; line-height: 1; }
+.lr-ic h3 { margin: 0; font-size: 12pt; text-transform: uppercase; letter-spacing: .02em; } .lr-ic p { margin: 1mm 0 2mm; color: #8a8384; }
+.lr-ic ul, .lr-div ul { list-style: none; padding: 0; margin: 0; } .lr-ic li { padding: 1mm 0; } .lr-ic li b, .lr-div li b { font-family: "Plex Mono", monospace; color: #F29C1F; font-weight: 400; margin-right: 2mm; }
+.lr-ic li span { color: #8a8384; margin-left: 3mm; font-size: 7.6pt; }
+.lr-note { margin-top: 8mm; } .lr-note h4 { margin-top: 0; } .lr-note li { margin: 1.5mm 0; }
+.lr-div { break-before: page; height: 250mm; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 20mm; border-left: 6px solid #F29C1F; padding-left: 10mm; }
+.lr-div .n { font-size: 120pt; } .lr-div h2 { font-size: 26pt; margin: 4mm 0 1mm; text-transform: uppercase; } .lr-div p { color: #8a8384; font-size: 12pt; margin: 0 0 6mm; }
+.lr-div li { font-size: 12pt; padding: 1.5mm 0; }
+.lr-sez { break-before: page; }
+.lr-testa { display: flex; justify-content: space-between; align-items: stretch; border: 1px solid #231F20; margin-bottom: 4mm; }
+.lr-testa > div:first-child { padding: 2.5mm 4mm; } .lr-testa b { display: block; text-transform: uppercase; font-size: 9pt; } .lr-testa span { color: #8a8384; font-size: 7.6pt; text-transform: uppercase; }
+.lr-cod { background: #231F20; color: #fff; font-size: 17pt; font-weight: 600; display: flex; align-items: center; gap: 3mm; padding: 0 5mm; }
+.lr-cod .n { font-family: "Doto", monospace; color: #F29C1F; font-size: 17pt; text-transform: none; } .lr-cod i { font-style: normal; font-family: "Plex Mono", monospace; font-size: 10pt; color: #F29C1F; border: 1px solid #F29C1F; border-radius: 3px; padding: 1px 6px; }
+.lr-scheda { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2mm; margin-bottom: 4mm; }
+.lr-k { border: 1px solid #CFCBCA; padding: 2mm 2.5mm; text-align: center; } .lr-k span { display: block; font-family: "Plex Mono", monospace; font-size: 6pt; text-transform: uppercase; letter-spacing: .06em; color: #6F696A; }
+.lr-k b { display: block; font-size: 8.6pt; margin-top: .8mm; } .lr-k i { display: block; font-style: normal; font-size: 6.8pt; color: #F29C1F; }
+.lr h4 { font-family: "Plex Mono", monospace; font-size: 7.6pt; letter-spacing: .14em; text-transform: uppercase; color: #F29C1F; margin: 3mm 0 2mm; font-weight: 400; }
+.lr-tb { width: 100%; border-collapse: collapse; } .lr-tb th { font-family: "Plex Mono", monospace; font-weight: 400; font-size: 6.2pt; text-transform: uppercase; letter-spacing: .05em; color: #fff; background: #231F20; text-align: left; padding: 1.6mm 1.6mm; vertical-align: bottom; }
+.lr-tb th small { color: #F29C1F; text-transform: none; } .lr-tb td { padding: .85mm 1.6mm; border-bottom: 1px solid #E6E2E1; } .lr-tb thead { display: table-header-group; } .lr-tb tr { break-inside: avoid; }
+.lr-tb .n { text-align: right; } .lr-tb .cod { font-family: "Plex Mono", monospace; } .lr-tb .p { font-weight: 600; white-space: nowrap; } .lr-tb th.pz { background: #F29C1F; color: #231F20; }
+.lr-prezzi tr.gr-inizio td { border-top: 1.5px solid #231F20; } .lr-prezzi td.gr b { font-family: "Doto", monospace; font-size: 13pt; color: #F29C1F; }
+.lr-opz .cat td { font-family: "Plex Mono", monospace; font-size: 6.4pt; text-transform: uppercase; letter-spacing: .1em; color: #F29C1F; border-bottom: 1px solid #F29C1F; padding-top: 2.5mm; font-weight: 400; }
+.lr-leg { font-size: 6.8pt; color: #6F696A; margin: 2mm 0 0; }
+.lr-rich, .lr-rich-box { color: #8a8384; font-weight: 400; } .lr-rich-box { background: #FFF4E2; border-left: 3px solid #F29C1F; padding: 3mm; color: #231F20; }
+.lr-resa { break-inside: avoid; margin-bottom: 6mm; } .lr-resa h4 span { color: #8a8384; margin-left: 2mm; } .lr-resa td small { color: #8a8384; } .lr-resa td { text-align: right; }
+.lr input { width: 70px; text-align: right; font: inherit; font-weight: 600; color: #231F20; background: #F6F4F3; border: 1px solid #E0DCDB; border-radius: 3px; padding: 1px 4px; }
+.lr input:focus { outline: 2px solid #F29C1F; background: #fff; } .lr input.mod { background: #FFF1DB; border-color: #F29C1F; }
+.lr-st { display: none; }
+@media print { .lr input { display: none; } .lr-st { display: inline; } }

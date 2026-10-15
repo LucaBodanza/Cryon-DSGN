@@ -505,7 +505,7 @@ function vita() {   // la finestra-app tiene acceso il server; alla chiusura lo 
   document.querySelector('[data-svg="logo"]').innerHTML = await svg('logo');
   avviaConfiguratore({ S, WEB, vai, toast, apriScheda });
   avviaMenu();
-  avviaListino({ vai, toast, caricaSvg: async el => { for (const x of el.querySelectorAll('[data-svg]')) x.innerHTML = await svg(x.dataset.svg); } });
+  Promise.all([svg('logo'), svg('pittogramma')]).then(([l, p]) => avviaListino({ vai, toast, svgLogo: l, svgPicto: p }));
   for (const id of ['#hConfig', '#nConfig']) $(id).onclick = () => apriConfiguratore(S.scelte);
   sfogliaEventi(); stato(); orologio(); setInterval(orologio, 30000); vita();
   await libreria();
