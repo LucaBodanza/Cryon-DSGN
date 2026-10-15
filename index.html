@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="web/app.css">
 </head>
 <body>
-<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.5" };
+<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.6" };
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
 <canvas id="scena"></canvas>
 <div id="grana"></div>
@@ -49,8 +49,10 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
   <button class="marchio" id="vaiHome" title="Libreria">
     <span class="logo" data-svg="logo"></span><span class="sep"></span><span class="app">CRYON DSGN</span>
   </button>
+  <button class="navb indietro" id="nIndietro" hidden title="Torna indietro (Esc)">← Indietro</button>
   <nav class="briciole" id="briciole"></nav>
   <div class="dx">
+    <button class="navb" id="nListino">Listino</button>
     <button class="navb" id="nScelte">Scelta macchina</button>
     <button class="navb" id="nConfig">Configuratore</button>
     <button class="chip" id="grafica" title="Qualità grafica: automatica, leggera o piena"></button>
@@ -67,12 +69,22 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
     <p class="en">Cataloghi tecnici Procryon<br><span class="muted">Procryon technical catalogues</span></p>
     <div class="numeri" id="numeri"></div>
     <div class="filtro-att" id="filtroAtt"></div>
-    <div class="home-az"><button class="btn" id="hConfig">Configuratore →</button></div>
+    <div class="home-az"><button class="btn" id="hConfig">Configuratore →</button><button class="btn ghost" id="hScelte">Scelta macchina</button><button class="btn ghost" id="hListino">Listino prezzi</button></div>
   </div>
   <div class="scaffale-wrap">
     <div class="scaffale-testa"><span class="lab">La libreria · The library</span><span class="lab muted" id="scaffaleInfo"></span>
       <div class="frecce"><button id="scSx" aria-label="indietro">←</button><button id="scDx" aria-label="avanti">→</button></div></div>
     <div class="scaffale" id="scaffale"></div>
+  </div>
+</section>
+
+<!-- LISTINO PREZZI -->
+<section id="listino" class="vista">
+  <div class="li-in">
+    <span class="pill cool">Listino prezzi 2026 · Price list</span>
+    <h2>Listino prezzi Procryon</h2>
+    <p class="en">Prezzi in euro, IVA esclusa · versione provvisoria.<br><span class="muted">Il listino completo raccoglie tutte le serie; i listini di serie hanno lo stesso numero del catalogo.</span></p>
+    <div id="liCorpo"></div>
   </div>
 </section>
 

@@ -48,7 +48,10 @@ function indietro() {
 function briciole() {
   const b = $('#briciole'), c = S.cur;
   const p = [];
+  $('#nIndietro').hidden = S.vista === 'home' || S.vista === 'intro';
   if (S.vista === 'menu') p.push('<b>Scelta macchina</b>');
+  else if (S.vista === 'listino') p.push('<b>Listino prezzi</b>');
+  else if (S.vista === 'sfoglia' && S.sfFonte?.tipo) { b.innerHTML = `<span>Listino prezzi</span><span class="muted">/</span><b>${esc(S.sfFonte.titolo)}</b>`; return; }
   else if (S.vista !== 'home' && S.vista !== 'intro') p.push('<span>Libreria</span>');
   if (c && ['catalogo', 'sfoglia', 'sotto'].includes(S.vista)) p.push(`<b>${esc(String(c.numero).padStart(2, '0'))} · ${esc(c.nome)}</b>`);
   if (S.vista === 'sfoglia') p.push(`<span>${S.sfFonte?.sotto ? esc(S.sfFonte.sotto) : 'Catalogo completo'}</span>`);
@@ -70,7 +73,7 @@ async function apriScheda(codice, serie) {
 function intro() {
   const t = 'CRYON DSGN';
   $('#introTit').innerHTML = [...t].map((ch, i) => `<span class="${i > 5 ? 'a' : ''}" style="animation-delay:${0.9 + i * 0.07}s">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
-  const entra = () => { if (S.vista === 'intro') vai('menu', { push: false }); };
+  const entra = () => { if (S.vista === 'intro') vai('home', { push: false }); };
   $('#salta').onclick = entra;
   $('#intro').addEventListener('click', entra);
   addEventListener('keydown', e => { if (S.vista === 'intro') entra(); }, { once: true });
@@ -236,11 +239,11 @@ async function offline(c) {
 }
 
 // ================================================================ sfoglia
-async function sfoglia({ url, titolo, sotto = null, pagina = 1 }) {
-  S.sfFonte = { url, titolo, sotto };
+async function sfoglia({ url, titolo, sotto = null, pagina = 1, tipo = null }) {
+  S.sfFonte = { url, titolo, sotto, tipo };
   vai('sfoglia');
-  const m = S.cur.manifest;
-  $('#sfTit').innerHTML = `${esc(titolo)}<span>${sotto ? 'sotto-catalogo' : 'catalogo completo'}</span>`;
+  const m = tipo ? { indice: [], sotto: [] } : S.cur.manifest;
+  $('#sfTit').innerHTML = `${esc(titolo)}<span>${tipo || (sotto ? 'sotto-catalogo' : 'catalogo completo')}</span>`;
   $('#sfPdf').href = url; $('#sfCerca').value = '';
   $('#sfCarica').classList.remove('via');
   const sel = $('#sfIndice');
@@ -262,7 +265,7 @@ function aggiornaSf(s) {
   $('#sfPrev').disabled = s.prima; $('#sfNext').disabled = s.fine;
   if (s.ultima != null) $('#sfScorri').max = s.ultima;
   $('#sfScorri').value = s.k;
-  const m = S.cur?.manifest;
+  const m = S.sfFonte?.tipo ? null : S.cur?.manifest;
   if (m && !S.sfFonte?.sotto) {
     const p = s.a || s.b;
     const sez = [...m.indice].filter(x => x.pagina && x.pagina <= p).pop();
@@ -293,13 +296,14 @@ function sfogliaEventi() {
     if (e.key !== 'Enter') return;
     const q = e.target.value.trim().toUpperCase(); if (!q) return;
     if (/^\d+$/.test(q)) return S.libro.vaiPagina(+q);
+    if (S.sfFonte?.tipo) return;
     const m = S.cur.manifest;
     const hit = m.sotto.find(x => x.codice.toUpperCase() === q) || m.sotto.find(x => x.codice.toUpperCase().includes(q));
     if (hit) { if (S.sfFonte?.sotto) sfoglia({ url: `cat/${encodeURI(m.slug)}/${encodeURI(m.file)}`, titolo: S.cur.nome, pagina: hit.pagina_catalogo }); else S.libro.vaiPagina(hit.pagina_catalogo); toast(`${hit.codice} · pagina ${hit.pagina_catalogo}`); }
     else toast('Nessuna configurazione trovata');
   };
   addEventListener('keydown', e => {
-    if (e.key === 'Escape' && S.vista !== 'home' && S.vista !== 'intro' && S.vista !== 'menu') { e.target.blur?.(); return indietro(); }
+    if (e.key === 'Escape' && S.vista !== 'home' && S.vista !== 'intro') { e.target.blur?.(); return indietro(); }
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
     if (S.vista === 'sfoglia') {
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); S.libro.gira(1); }
@@ -430,7 +434,23 @@ function avviaMenu() {
   $('#mnVai').onclick = () => { filtroScaffale(); vai('home', { push: false }); S.storia = []; };
   $('#mnConf').onclick = () => apriConfiguratore(S.scelte);
   $('#mnTutto').onclick = () => { S.scelte = { cond: 'tutte', gas: 'tutti', comp: 'tutti' }; salvaScelte(); filtroScaffale(); vai('home', { push: false }); S.storia = []; };
-  $('#nScelte').onclick = apriMenu;
+  $('#nScelte').onclick = apriMenu; $('#hScelte').onclick = apriMenu;
+  $('#nListino').onclick = apriListino; $('#hListino').onclick = apriListino;
+  $('#nIndietro').onclick = indietro;
+}
+
+// ================================================================ listino prezzi (PDF in /listini/, elenco in dati/listini.json)
+let LISTINI = null;
+async function apriListino() {
+  if (!LISTINI) { try { LISTINI = await fetch('dati/listini.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null); } catch (e) { LISTINI = null; } }
+  const c = $('#liCorpo');
+  if (!LISTINI?.completo) c.innerHTML = '<p class="vuoto">Listino non ancora disponibile in questa versione.</p>';
+  else {
+    const L = LISTINI, scheda = (x, cls) => `<button class="li-c ${cls}" data-u="${esc(x.file)}" data-t="${esc(x.titolo)}"><span class="li-n">${esc(x.numero)}</span><b>${esc(x.titolo)}</b><span>${esc(x.sotto || '')}</span><i>${esc(x.pagine)} pagine · PDF</i></button>`;
+    c.innerHTML = `<div class="lab li-lab">Listino principale</div>${scheda(L.completo, 'grande')}<div class="lab li-lab">Listini per serie · stesso numero del catalogo</div><div class="li-griglia">${L.serie.map(x => scheda(x, '')).join('')}</div>`;
+    c.querySelectorAll('.li-c').forEach(b => b.onclick = () => sfoglia({ url: 'listini/' + encodeURI(b.dataset.u), titolo: b.dataset.t, tipo: 'listino prezzi' }));
+  }
+  vai('listino');
 }
 
 // ================================================================ qualità grafica (automatica / leggera / piena)
