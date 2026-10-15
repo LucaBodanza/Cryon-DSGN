@@ -5,53 +5,60 @@
   "titolo": "Listino completo 2026",
   "sotto": "Tutte le serie Procryon",
   "file": "Listino_Procryon_2026_COMPLETO.pdf",
-  "pagine": 142
+  "pagine": 208
  },
  "serie": [
   {
    "numero": "01",
+   "id": "PRO-A",
    "titolo": "Listino Serie PRO-A",
    "sotto": "Refrigeratori d'acqua condensati ad aria · compressori scroll · varianti S micro-canali e C rame-alluminio",
    "file": "Listino_Procryon_2026_01_PRO-A.pdf",
-   "pagine": 51
+   "pagine": 80
   },
   {
    "numero": "02",
+   "id": "PRO-W",
    "titolo": "Listino Serie PRO-W",
    "sotto": "Refrigeratori d'acqua condensati ad acqua · compressori scroll · installazione interna",
    "file": "Listino_Procryon_2026_02_PRO-W.pdf",
-   "pagine": 11
+   "pagine": 17
   },
   {
    "numero": "03",
+   "id": "PROS-A",
    "titolo": "Listino Serie PROS-A",
    "sotto": "Refrigeratori d'acqua condensati ad aria · compressori a vite · varianti S micro-canali e C rame-alluminio",
    "file": "Listino_Procryon_2026_03_PROS-A.pdf",
-   "pagine": 34
+   "pagine": 45
   },
   {
    "numero": "04",
+   "id": "PROS-W",
    "titolo": "Listino Serie PROS-W",
    "sotto": "Refrigeratori d'acqua condensati ad acqua · compressori a vite · installazione interna",
    "file": "Listino_Procryon_2026_04_PROS-W.pdf",
-   "pagine": 13
+   "pagine": 17
   },
   {
    "numero": "05",
+   "id": "F-PRO",
    "titolo": "Listino Serie F-PRO",
    "sotto": "Refrigeratori d'acqua ad aria con free cooling integrato · compressori scroll · varianti S e C",
    "file": "Listino_Procryon_2026_05_F-PRO.pdf",
-   "pagine": 19
+   "pagine": 26
   },
   {
    "numero": "06",
+   "id": "F-PROS",
    "titolo": "Listino Serie F-PROS",
    "sotto": "Refrigeratori d'acqua ad aria con free cooling integrato · compressori a vite · varianti S e C",
    "file": "Listino_Procryon_2026_06_F-PROS.pdf",
-   "pagine": 23
+   "pagine": 32
   },
   {
    "numero": "07",
+   "id": "PRO-DRY",
    "titolo": "Listino Serie PRO-DRY",
    "sotto": "Raffreddatori di liquido ad aria · dry cooler",
    "file": "Listino_Procryon_2026_07_PRO-DRY.pdf",

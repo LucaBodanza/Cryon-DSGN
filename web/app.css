@@ -387,3 +387,50 @@ body.v-menu #barra { background: rgba(22,19,20,.94); backdrop-filter: blur(8px);
 body.v-listino #barra { background: rgba(22,19,20,.94); backdrop-filter: blur(8px); }
 .home-az { display: flex; gap: 10px; flex-wrap: wrap; }
 @media (max-width: 700px) { #listino { padding: 84px 16px 40px; } #nListino, #nScelte { display: none; } }
+
+/* ===== LISTINO: modifica prezzi (schermo = foglio bianco, stampa = PDF) ===== */
+.li-c { display: grid; gap: 8px; }
+.li-c .li-apri { all: unset; cursor: pointer; display: grid; gap: 4px; }
+.li-c .li-mod { justify-self: start; }
+#listinoEd { overflow: auto; padding: 78px 0 40px; background: #3a3536; }
+.le-barra { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 4vw; background: rgba(22,19,20,.96); border-bottom: 1px solid var(--line); }
+.le-barra select, .le-barra input { background: var(--bg1); border: 1px solid var(--line2); border-radius: 8px; padding: 6px 9px; color: var(--ink); font-size: 13px; }
+.le-barra #lePerc { width: 72px; } .le-gr { display: inline-flex; gap: 6px; align-items: center; }
+.le-doc { width: 210mm; max-width: calc(100% - 24px); margin: 18px auto; background: #fff; color: #231F20; padding: 14mm 13mm; font-size: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+.le-cop { position: relative; height: 270mm; background: #231F20; color: #fff; margin: -14mm -13mm 10mm; overflow: hidden; }
+.le-cop .dots { position: absolute; inset: 0; background-image: radial-gradient(circle, #4A4546 1.2px, transparent 1.5px); background-size: 5.2mm 5.2mm; }
+.le-cop .logo { position: absolute; left: 14mm; top: 14mm; width: 52mm; color: #fff; } .le-cop .picto { position: absolute; right: 18mm; top: 40mm; width: 62mm; color: #F29C1F; }
+.le-cop svg { width: 100%; height: auto; display: block; }
+.le-cop .in { position: absolute; left: 14mm; right: 14mm; bottom: 22mm; }
+.le-cop .num { font-family: "Doto", monospace; font-size: 86px; line-height: .9; color: #A8A3A4; }
+.le-cop .lab { font-family: "Plex Mono", monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #A8A3A4; margin: 14px 0 8px; }
+.le-cop h1 { font-size: 48px; line-height: 1.02; margin: 0 0 10px; font-weight: 600; } .le-cop .sub { color: #A8A3A4; font-size: 14px; margin-bottom: 18px; }
+.le-cop .claim { position: absolute; right: 14mm; bottom: 10mm; text-align: right; font-size: 10px; color: #7D7879; }
+.le-cop .pill, .le-doc .pill { display: inline-block; font-family: "Plex Mono", monospace; font-size: 9px; letter-spacing: .1em; border: 1px solid #A8A3A4; color: #fff; border-radius: 4px; padding: 2px 7px; margin: 0 4px 4px 0; }
+.le-cop .pill.acc { border-color: #F29C1F; color: #F29C1F; }
+.le-testa { display: flex; gap: 12px; align-items: center; border-bottom: 2px solid #F29C1F; padding-bottom: 8px; margin: 16px 0 8px; }
+.le-testa .n { font-family: "Doto", monospace; font-size: 44px; color: #F29C1F; line-height: 1; }
+.le-testa h2 { font-size: 24px; margin: 0; } .le-testa h2 span { color: #8a8384; font-weight: 400; } .le-testa p { margin: 0; color: #6F696A; }
+.le-gas h3 { display: flex; justify-content: space-between; background: #231F20; color: #fff; padding: 7px 10px; border-radius: 4px; margin: 14px 0 6px; font-weight: 400; }
+.le-gas h3 b { font-family: "Plex Mono", monospace; color: #F29C1F; font-weight: 400; font-size: 15px; } .le-gas h3 span { font-family: "Plex Mono", monospace; font-size: 10px; color: #A8A3A4; text-transform: uppercase; }
+.le-doc h4 { font-family: "Plex Mono", monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #F29C1F; margin: 14px 0 6px; font-weight: 400; }
+.le-tb { width: 100%; border-collapse: collapse; } .le-tb th { font-family: "Plex Mono", monospace; font-weight: 400; font-size: 9px; text-transform: uppercase; color: #6F696A; text-align: left; border-bottom: 1px solid #231F20; padding: 4px 5px; }
+.le-tb td { padding: 3px 5px; border-bottom: 1px solid #E6E2E1; } .le-tb .n { text-align: right; } .le-tb .cod { font-family: "Plex Mono", monospace; } .le-tb .p { font-weight: 600; white-space: nowrap; }
+.le-tb input { width: 92px; text-align: right; font: inherit; font-weight: 600; color: #231F20; background: #F6F4F3; border: 1px solid #E0DCDB; border-radius: 4px; padding: 2px 5px; }
+.le-tb input:focus { outline: 2px solid #F29C1F; background: #fff; } .le-tb input.mod { background: #FFF1DB; border-color: #F29C1F; }
+.le-st { display: none; } .le-rich { color: #8a8384; font-weight: 400; }
+.le-opz { columns: 2; column-gap: 7mm; } .le-blocco { break-inside: avoid; margin: 0 0 8px; }
+.le-blocco .bt { display: flex; justify-content: space-between; background: #231F20; color: #fff; padding: 4px 6px; border-radius: 3px 3px 0 0; font-size: 10px; font-family: "Plex Mono", monospace; } .le-blocco .bt span { color: #F29C1F; }
+.le-tb.op td { font-size: 11px; padding: 2px 5px; } .le-tb.op .cat td { font-family: "Plex Mono", monospace; font-size: 8.5px; text-transform: uppercase; letter-spacing: .1em; color: #F29C1F; border-bottom: 1px solid #F29C1F; }
+body.v-listinoEd #barra { background: rgba(22,19,20,.96); }
+@media print {
+  @page { size: A4; margin: 12mm; } @page :first { margin: 0; }
+  html, body { overflow: visible !important; height: auto !important; background: #fff !important; }
+  body > *:not(#listinoEd) { display: none !important; }
+  #listinoEd { position: static !important; opacity: 1 !important; padding: 0 !important; background: #fff !important; overflow: visible !important; }
+  .le-barra { display: none !important; }
+  .le-doc { width: auto; max-width: none; margin: 0; padding: 0; box-shadow: none; font-size: 9pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .le-cop { height: 296mm; margin: 0; page-break-after: always; }
+  .le-sez { page-break-before: always; } .le-gas + .le-gas { page-break-before: always; }
+  .le-tb input { display: none; } .le-st { display: inline; } .le-tb tr { page-break-inside: avoid; }
+}

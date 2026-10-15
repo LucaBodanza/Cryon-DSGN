@@ -2,6 +2,7 @@
 import { avviaScena } from './scena.js';
 import { Libro } from './libro.js';
 import { avviaConfiguratore, apriConfiguratore } from './configuratore.js';
+import { avviaListino, apriEditor } from './listino.js';
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -51,6 +52,7 @@ function briciole() {
   $('#nIndietro').hidden = S.vista === 'home' || S.vista === 'intro';
   if (S.vista === 'menu') p.push('<b>Scelta macchina</b>');
   else if (S.vista === 'listino') p.push('<b>Listino prezzi</b>');
+  else if (S.vista === 'listinoEd') p.push('<span>Listino prezzi</span><span class="muted">/</span><b>Modifica prezzi</b>');
   else if (S.vista === 'sfoglia' && S.sfFonte?.tipo) { b.innerHTML = `<span>Listino prezzi</span><span class="muted">/</span><b>${esc(S.sfFonte.titolo)}</b>`; return; }
   else if (S.vista !== 'home' && S.vista !== 'intro') p.push('<span>Libreria</span>');
   if (c && ['catalogo', 'sfoglia', 'sotto'].includes(S.vista)) p.push(`<b>${esc(String(c.numero).padStart(2, '0'))} · ${esc(c.nome)}</b>`);
@@ -446,9 +448,10 @@ async function apriListino() {
   const c = $('#liCorpo');
   if (!LISTINI?.completo) c.innerHTML = '<p class="vuoto">Listino non ancora disponibile in questa versione.</p>';
   else {
-    const L = LISTINI, scheda = (x, cls) => `<button class="li-c ${cls}" data-u="${esc(x.file)}" data-t="${esc(x.titolo)}"><span class="li-n">${esc(x.numero)}</span><b>${esc(x.titolo)}</b><span>${esc(x.sotto || '')}</span><i>${esc(x.pagine)} pagine · PDF</i></button>`;
+    const L = LISTINI, scheda = (x, cls) => `<div class="li-c ${cls}"><button class="li-apri" data-u="${esc(x.file)}" data-t="${esc(x.titolo)}"><span class="li-n">${esc(x.numero)}</span><b>${esc(x.titolo)}</b><span>${esc(x.sotto || '')}</span><i>${esc(x.pagine)} pagine · PDF</i></button><button class="btn ghost mini li-mod" data-s="${esc(x.id || '')}">Modifica prezzi</button></div>`;
     c.innerHTML = `<div class="lab li-lab">Listino principale</div>${scheda(L.completo, 'grande')}<div class="lab li-lab">Listini per serie · stesso numero del catalogo</div><div class="li-griglia">${L.serie.map(x => scheda(x, '')).join('')}</div>`;
-    c.querySelectorAll('.li-c').forEach(b => b.onclick = () => sfoglia({ url: 'listini/' + encodeURI(b.dataset.u), titolo: b.dataset.t, tipo: 'listino prezzi' }));
+    c.querySelectorAll('.li-mod').forEach(b => b.onclick = () => apriEditor(b.dataset.s || null));
+    c.querySelectorAll('.li-apri').forEach(b => b.onclick = () => sfoglia({ url: 'listini/' + encodeURI(b.dataset.u), titolo: b.dataset.t, tipo: 'listino prezzi' }));
   }
   vai('listino');
 }
@@ -502,6 +505,7 @@ function vita() {   // la finestra-app tiene acceso il server; alla chiusura lo 
   document.querySelector('[data-svg="logo"]').innerHTML = await svg('logo');
   avviaConfiguratore({ S, WEB, vai, toast, apriScheda });
   avviaMenu();
+  avviaListino({ vai, toast, caricaSvg: async el => { for (const x of el.querySelectorAll('[data-svg]')) x.innerHTML = await svg(x.dataset.svg); } });
   for (const id of ['#hConfig', '#nConfig']) $(id).onclick = () => apriConfiguratore(S.scelte);
   sfogliaEventi(); stato(); orologio(); setInterval(orologio, 30000); vita();
   await libreria();

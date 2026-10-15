@@ -78,6 +78,22 @@
   </div>
 </section>
 
+<!-- LISTINO: MODIFICA PREZZI -->
+<section id="listinoEd" class="vista">
+  <div class="le-barra">
+    <select id="leSerie" aria-label="Serie"></select><select id="leGas" aria-label="Gas"></select>
+    <span class="le-gr"><input id="lePerc" placeholder="+5 / -3" aria-label="Percentuale"><span>%</span>
+      <select id="leCosa"><option value="tutto">unità + optional</option><option value="unita">solo unità</option><option value="opz">solo optional</option></select>
+      <button class="btn mini" id="leApplica">Applica alla selezione</button></span>
+    <button class="btn ghost mini" id="leRipristina">Ripristina selezione</button>
+    <button class="btn ghost mini" id="leEsporta">Esporta modifiche</button>
+    <label class="btn ghost mini">Importa<input type="file" id="leImporta" accept=".json" hidden></label>
+    <button class="btn mini" id="leStampa">Scarica PDF</button>
+    <span class="lab muted" id="leConta"></span>
+  </div>
+  <div class="le-doc" id="leDoc"></div>
+</section>
+
 <!-- SCHEDA CATALOGO -->
 <section id="catalogo" class="vista">
   <div class="cat-sx"><div class="libro3d grande" id="libroGrande"></div></div>

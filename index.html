@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="web/app.css">
 </head>
 <body>
-<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.6" };
+<script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.7" };
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
 <canvas id="scena"></canvas>
 <div id="grana"></div>
@@ -86,6 +86,22 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
     <p class="en">Prezzi in euro, IVA esclusa · versione provvisoria.<br><span class="muted">Il listino completo raccoglie tutte le serie; i listini di serie hanno lo stesso numero del catalogo.</span></p>
     <div id="liCorpo"></div>
   </div>
+</section>
+
+<!-- LISTINO: MODIFICA PREZZI -->
+<section id="listinoEd" class="vista">
+  <div class="le-barra">
+    <select id="leSerie" aria-label="Serie"></select><select id="leGas" aria-label="Gas"></select>
+    <span class="le-gr"><input id="lePerc" placeholder="+5 / -3" aria-label="Percentuale"><span>%</span>
+      <select id="leCosa"><option value="tutto">unità + optional</option><option value="unita">solo unità</option><option value="opz">solo optional</option></select>
+      <button class="btn mini" id="leApplica">Applica alla selezione</button></span>
+    <button class="btn ghost mini" id="leRipristina">Ripristina selezione</button>
+    <button class="btn ghost mini" id="leEsporta">Esporta modifiche</button>
+    <label class="btn ghost mini">Importa<input type="file" id="leImporta" accept=".json" hidden></label>
+    <button class="btn mini" id="leStampa">Scarica PDF</button>
+    <span class="lab muted" id="leConta"></span>
+  </div>
+  <div class="le-doc" id="leDoc"></div>
 </section>
 
 <!-- SCHEDA CATALOGO -->
