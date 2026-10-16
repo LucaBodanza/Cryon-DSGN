@@ -1,0 +1,103 @@
+/* Cryon DSGN — accesso riservato vDragon 5 (versione web): profili in stile "chi sta usando", linguaggio Procryon (nero, puntini, arancio) */
+#accesso { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 90px 24px 70px; overflow: auto;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, #2A2122 0%, var(--bg) 70%); opacity: 0; transition: opacity .6s var(--ease); }
+#accesso.su { opacity: 1; }
+#accesso.via { opacity: 0; pointer-events: none; }
+#accesso::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .55;
+  background-image: radial-gradient(rgba(242, 156, 31, .2) 1px, transparent 1.4px); background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 0%, transparent 75%); mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 0%, transparent 75%); }
+.ac-marchio { position: fixed; top: 22px; left: 32px; display: flex; align-items: center; gap: 14px; z-index: 2; }
+.ac-marchio .logo svg { height: 24px; width: auto; display: block; fill: var(--ink); }
+.ac-marchio .sep { width: 1px; height: 16px; background: var(--line2); }
+.ac-marchio .app { font-family: "Doto", monospace; font-weight: 800; font-size: 16px; letter-spacing: .08em; color: var(--accent); }
+
+.ac-scelta, .ac-pw { position: relative; z-index: 1; text-align: center; transition: opacity .45s var(--ease), transform .55s var(--ease); }
+.ac-scelta h1 { margin: 0; font-weight: 500; font-size: clamp(30px, 4.4vw, 56px); letter-spacing: -.01em; }
+.ac-scelta h1 .acc { font-family: "Doto", monospace; font-weight: 800; letter-spacing: .04em; }
+.ac-scelta > .lab { margin: 14px 0 0; color: var(--muted); }
+.ac-profili { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(18px, 3vw, 36px); margin-top: clamp(34px, 6vh, 60px); max-width: 1100px; }
+.ac-p { background: none; border: 0; padding: 0; width: clamp(120px, 12vw, 160px); display: flex; flex-direction: column; align-items: center; gap: 8px; color: inherit; cursor: pointer;
+  opacity: 0; transform: translateY(16px); animation: acSu .7s var(--ease) calc(.15s + var(--d)) forwards; }
+.ac-p b { font-weight: 500; font-size: 15px; color: var(--ink2); margin-top: 6px; transition: color .2s; }
+.ac-p .lab { font-size: 9.5px; color: var(--muted); letter-spacing: .08em; line-height: 1.4; }
+.ac-p:hover b, .ac-p:focus-visible b { color: var(--ink); }
+.ac-p .ac-av { width: 100%; transition: transform .35s var(--ease), box-shadow .25s; }
+.ac-p:hover .ac-av, .ac-p:focus-visible .ac-av { transform: scale(1.05); box-shadow: 0 0 0 3px var(--accent), 0 18px 40px rgba(0, 0, 0, .45); }
+.ac-p:focus-visible { outline: none; }
+@keyframes acSu { to { opacity: 1; transform: none; } }
+
+/* avatar: quadrato Procryon, iniziali Doto, pittogramma; colore per ruolo */
+.ac-av { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: 12px; overflow: hidden; flex: none; background: #231F20;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .35); border: 1px solid var(--line2); }
+.ac-av::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(#4A4546 .9px, transparent 1.2px); background-size: 9px 9px; opacity: .8; }
+.ac-av .ac-in { position: relative; font-family: "Doto", monospace; font-weight: 800; font-size: clamp(30px, 3.4vw, 46px); color: var(--ink); letter-spacing: .02em; }
+.ac-av .ac-pit { position: absolute; right: 9%; top: 9%; width: 22%; color: var(--accent); }
+.ac-av .ac-pit svg { width: 100%; height: auto; display: block; fill: currentColor; }
+.ac-av.tdev { background: linear-gradient(140deg, #F29C1F, #B86A05); border-color: #F29C1F; } .ac-av.tdev .ac-in { color: #1a1405; } .ac-av.tdev .ac-pit { color: #231F20; }
+.ac-av.tadmin { border-color: #F29C1F; }
+.ac-av.tclient { border-color: #5AA0E0; } .ac-av.tclient .ac-pit { color: #5AA0E0; }
+.ac-av.tselect { border-color: #57C38A; } .ac-av.tselect .ac-pit { color: #57C38A; }
+
+/* password */
+.ac-pw { position: absolute; left: 50%; top: 50%; width: min(420px, 90vw); transform: translate(-50%, -40%); opacity: 0; pointer-events: none; display: grid; gap: 10px; text-align: left; }
+#accesso.pw .ac-scelta { opacity: 0; transform: scale(.96); pointer-events: none; }
+#accesso.pw .ac-pw { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }
+.ac-pw .ac-chi { display: flex; gap: 14px; align-items: center; margin-bottom: 10px; }
+.ac-pw .ac-chi .ac-av { width: 64px; } .ac-pw .ac-chi .ac-av .ac-in { font-size: 22px; }
+.ac-pw .ac-chi b { display: block; font-size: 18px; font-weight: 500; }
+.ac-campo { position: relative; }
+.ac-campo input { width: 100%; box-sizing: border-box; background: var(--bg1); border: 1px solid var(--line2); border-radius: 10px; color: var(--ink); font: inherit; font-size: 16px; padding: 12px 44px 12px 14px; }
+.ac-campo input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.ac-occhio { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--ink2); font-size: 16px; cursor: pointer; }
+.ac-l2, .ac-c2, .ac-att { display: none; }
+#accesso.att .ac-l2, #accesso.att .ac-c2 { display: block; }
+#accesso.att .ac-att { display: grid; gap: 8px; padding: 12px; border: 1px dashed var(--accent); border-radius: 10px; margin-bottom: 6px; }
+.ac-att .ac-file { justify-self: start; cursor: pointer; }
+.ac-err { color: #FF7A6B; min-height: 1.3em; font-size: 13.5px; }
+.ac-az { display: flex; justify-content: space-between; gap: 10px; margin-top: 6px; }
+.ac-nascosto { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+.ac-piede { position: fixed; bottom: 22px; left: 0; right: 0; text-align: center; color: var(--muted); z-index: 1; }
+.ac-pw.scuoti { animation: acScuoti .45s; }
+@keyframes acScuoti { 20%, 60% { margin-left: -8px; } 40%, 80% { margin-left: 8px; } }
+
+/* profilo in barra */
+.ac-menu { position: relative; }
+.ac-mini { background: none; border: 0; padding: 0; cursor: pointer; }
+.ac-mini .ac-av { width: 34px; border-radius: 8px; } .ac-mini .ac-av .ac-in { font-size: 13px; } .ac-mini .ac-av .ac-pit { display: none; }
+.ac-tendina { position: absolute; right: 0; top: calc(100% + 10px); min-width: 230px; background: var(--bg1); border: 1px solid var(--line2); border-radius: 12px; padding: 10px;
+  display: none; box-shadow: 0 18px 50px rgba(0, 0, 0, .5); z-index: 30; }
+.ac-menu.aperto .ac-tendina { display: grid; gap: 4px; }
+.ac-tendina .ac-chi { display: flex; gap: 10px; align-items: center; padding: 4px 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+.ac-tendina .ac-chi .ac-av { width: 40px; } .ac-tendina .ac-chi .ac-av .ac-in { font-size: 15px; } .ac-tendina .ac-chi b { display: block; font-weight: 500; }
+.ac-tendina button[data-a] { background: none; border: 0; color: var(--ink); text-align: left; padding: 8px; border-radius: 8px; cursor: pointer; font: inherit; }
+.ac-tendina button[data-a]:hover { background: var(--bg2); }
+
+/* impostazioni */
+#impostazioni { position: fixed; inset: 0; z-index: 25; background: rgba(12, 10, 11, .86); backdrop-filter: blur(8px); overflow: auto; opacity: 0; pointer-events: none; transition: opacity .35s var(--ease); }
+#impostazioni.su { opacity: 1; pointer-events: auto; }
+.im-in { max-width: 940px; margin: 0 auto; padding: 70px 24px 60px; }
+.im-testa { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.im-testa h2 { margin: 10px 0 4px; font-size: 40px; font-weight: 600; letter-spacing: -.02em; }
+.im-in h3 { margin: 34px 0 12px; font-family: "Plex Mono", monospace; font-weight: 400; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.im-lista { display: grid; gap: 10px; }
+.im-acc { background: var(--bg1); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 12px; }
+.im-chi { display: flex; gap: 12px; align-items: center; } .im-chi .ac-av { width: 46px; } .im-chi .ac-av .ac-in { font-size: 17px; } .im-chi .ac-av .ac-pit { display: none; }
+.im-chi b { display: block; font-weight: 500; } .im-az { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.btn.rosso { color: #FF7A6B; border-color: #FF7A6B; }
+.im-perm { display: flex; flex-wrap: wrap; gap: 18px; }
+.im-sw { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; }
+.im-sw input { display: none; }
+.im-sw span { width: 34px; height: 20px; border-radius: 20px; background: var(--bg3); position: relative; transition: background .2s; }
+.im-sw span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--ink2); transition: transform .2s var(--ease), background .2s; }
+.im-sw input:checked + span { background: var(--accent); } .im-sw input:checked + span::after { transform: translateX(14px); background: #1a1405; }
+.im-cat { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding-top: 4px; border-top: 1px solid var(--line); }
+.im-cat > div { display: grid; gap: 4px; align-content: start; }
+.im-ck { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; cursor: pointer; }
+.im-ck i { font-style: normal; font-family: "Plex Mono", monospace; font-size: 10.5px; color: var(--accent); }
+.im-ck input { accent-color: #F29C1F; }
+.im-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-top: 12px; }
+.im-form label { display: grid; gap: 4px; font-size: 12px; color: var(--ink2); flex: 1 1 200px; }
+.im-form input, .im-form select { background: var(--bg1); border: 1px solid var(--line2); border-radius: 8px; color: var(--ink); font: inherit; font-size: 14px; padding: 9px 11px; }
+.im-nuovo { margin-top: 12px; } .im-nuovo summary { list-style: none; cursor: pointer; display: inline-flex; } .im-nuovo summary::-webkit-details-marker { display: none; }
+.im-piede { position: sticky; bottom: 0; margin-top: 30px; padding: 14px 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: linear-gradient(transparent, rgba(12,10,11,.95) 30%); }
+@media (max-width: 700px) { .ac-marchio { left: 16px; } .im-in { padding: 60px 16px 40px; } .im-testa h2 { font-size: 30px; } }

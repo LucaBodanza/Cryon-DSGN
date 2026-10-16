@@ -53,7 +53,7 @@ function coeffFluido(f) {
 // ---------------------------------------------------------------- lettura del modulo
 function cond() {
   const v = id => parseFloat(String($(id).value).replace(',', '.'));
-  return { kw: v('#cfKw'), lwt: v('#cfLwt'), dt: v('#cfDt'), amb: v('#cfAmb'), acq: v('#cfAcq'), fluido: { tipo: $('#cfFluido').value, pct: v('#cfPct') || 0 }, qta: Math.max(1, parseInt($('#cfQta').value, 10) || 1) };
+  return { kw: v('#cfKw'), kwMax: v('#cfKwMax') || (v('#cfKw') ? v('#cfKw') * 1.5 : null), lwt: v('#cfLwt'), dt: v('#cfDt'), amb: v('#cfAmb'), acq: v('#cfAcq'), fluido: { tipo: $('#cfFluido').value, pct: v('#cfPct') || 0 }, qta: Math.max(1, parseInt($('#cfQta').value, 10) || 1) };
 }
 function serieAttive() {
   const D = C.D, fc = $('#cfCond').value, cp = $('#cfComp').value, fr = $('#cfFree').value;
@@ -74,7 +74,7 @@ function calcola() {
     const kwc = r.kw * cf;
     L.push({ u, s, kw: kwc, pw: r.pw, eer: r.pw ? kwc / r.pw : null, margine: k.kw ? (kwc / k.kw - 1) * 100 : null });
   }
-  const ok = k.kw ? L.filter(x => x.kw >= k.kw) : L;
+  const ok = L.filter(x => (!k.kw || x.kw >= k.kw) && (!k.kwMax || x.kw <= k.kwMax));   // intervallo min–max (richiesta Riccardo 16/10)
   ok.sort((a, b) => a.kw - b.kw || (b.eer || 0) - (a.eer || 0));
   C.lista = ok; C.fuori = L.length - ok.length; C.k = k; C.cf = cf;
   return ok;
@@ -107,10 +107,10 @@ function disegnaRisultati() {
   const el = $('#cfRis');
   const av = avvisi(k).map(t => `<div class="ai-nota">${esc(t)}</div>`).join('');
   if (!L.length) {
-    el.innerHTML = av + `<div class="vuoto">Nessuna configurazione con queste condizioni${k.kw ? ` raggiunge ${kwt(k.kw)} kW` : ''}. Prova ad allargare serie, varianti o refrigeranti, oppure a cambiare le temperature (alcune combinazioni sono fuori dal campo di lavoro).</div>`;
+    el.innerHTML = av + `<div class="vuoto">Nessuna configurazione con queste condizioni${k.kw ? ` sta tra ${kwt(k.kw)} e ${kwt(k.kwMax)} kW` : ''}. Prova ad allargare serie, varianti o refrigeranti, oppure a cambiare le temperature (alcune combinazioni sono fuori dal campo di lavoro).</div>`;
     return;
   }
-  el.innerHTML = av + `<div class="ai-testa"><b>${L.length}</b> configurazioni adatte${k.kw ? ` a ${kwt(k.kw)} kW` : ''} · acqua in uscita ${num(k.lwt, 1)} °C · aria ${num(k.amb, 1)} °C / acqua condensatore ${num(k.acq, 1)} °C${C.cf !== 1 ? ` · ${k.fluido.tipo} ${k.fluido.pct}% (resa × ${num(C.cf, 3)})` : ''}</div>` +
+  el.innerHTML = av + `<div class="ai-testa"><b>${L.length}</b> configurazioni adatte${k.kw ? ` tra ${kwt(k.kw)} e ${kwt(k.kwMax)} kW` : ''} · acqua in uscita ${num(k.lwt, 1)} °C · aria ${num(k.amb, 1)} °C / acqua condensatore ${num(k.acq, 1)} °C${C.cf !== 1 ? ` · ${k.fluido.tipo} ${k.fluido.pct}% (resa × ${num(C.cf, 3)})` : ''}</div>` +
     L.slice(0, 40).map((x, i) => `<div class="pr cf-r ${C.sel === x.u ? 'sel' : ''}" data-i="${i}">
       <div class="pc"><div class="cod">${esc(x.u.c)}<span>${esc(x.s.nome)} · ${esc(x.u.v)} · ${esc(x.u.g || 'dry cooler')}</span></div>
         <div class="ets"><span class="et">${kwt(x.kw)} kW</span>${x.eer ? `<span class="et">EER ${num(x.eer, 2)}</span>` : ''}<span class="et">${kwt(x.pw)} kW assorbiti</span>${x.margine != null ? `<span class="et ${x.margine > 25 ? 'muted' : ''}">margine +${num(x.margine, 0)}%</span>` : ''}${x.u.fc ? `<span class="et">free cooling ${x.u.fc} kW</span>` : ''}</div></div>
@@ -143,7 +143,7 @@ function richiesta() {
   return {
     id, data: ora.toLocaleDateString('it-IT'), azienda: f('#cfAz'), referente: f('#cfRef'), email: f('#cfMail'), telefono: f('#cfTel'), paese: f('#cfPaese'), progetto: f('#cfProg'),
     serie: D.S[u.s].nome, codice: X ? u.c.replace(/-([HO])[SC]([A-Z])/, '-$1X$2') : u.c, base: u.c, variante: X ? 'X' : u.v, var_testo: vt(u.s, X ? 'X' : u.v), gas: u.g || '—', gwp: D.gas[u.g]?.gwp, classe: D.gas[u.g]?.classe,
-    qta: k.qta, kw_rich: k.kw, lwt: k.lwt, ewt: k.lwt + k.dt, dt: k.dt, amb: D.S[u.s].condensazione === 'W' ? k.acq : k.amb, amb_lab: D.S[u.s].condensazione === 'W' ? 'Acqua in ingresso al condensatore' : 'Aria esterna',
+    qta: k.qta, kw_rich: k.kw, kw_max: k.kwMax, lwt: k.lwt, ewt: k.lwt + k.dt, dt: k.dt, amb: D.S[u.s].condensazione === 'W' ? k.acq : k.amb, amb_lab: D.S[u.s].condensazione === 'W' ? 'Acqua in ingresso al condensatore' : 'Aria esterna',
     fluido: k.fluido.tipo === 'acqua' ? 'Acqua' : `${k.fluido.tipo === 'MEG' ? 'Glicole etilenico' : 'Glicole propilenico'} ${k.fluido.pct}%`,
     kw: x.kw, pw: x.pw, eer: x.eer, margine: x.margine, u, opt: [...C.opt].map(i => D.opzioni[i][0]), note: f('#cfNote'), cto: X,
   };
@@ -184,7 +184,7 @@ async function pdf() {
   titolo('Cliente');
   righe([['Azienda', R.azienda], ['Referente', R.referente], ['E-mail', R.email], ['Telefono', R.telefono], ['Paese / località', R.paese], ['Progetto / riferimento', R.progetto]]);
   titolo('Condizioni di progetto');
-  righe([['Potenza frigorifera richiesta', R.kw_rich ? `${kwt(R.kw_rich)} kW` : 'non indicata'], ['Acqua uscita / ingresso', `${num(R.lwt, 1)} / ${num(R.ewt, 1)} °C (salto ${num(R.dt, 1)} K)`],
+  righe([['Potenza frigorifera richiesta', R.kw_rich ? `${kwt(R.kw_rich)} – ${kwt(R.kw_max)} kW` : 'non indicata'], ['Acqua uscita / ingresso', `${num(R.lwt, 1)} / ${num(R.ewt, 1)} °C (salto ${num(R.dt, 1)} K)`],
     [R.amb_lab, `${num(R.amb, 1)} °C`], ['Fluido', R.fluido], ['Quantità', String(R.qta)]]);
   titolo('Prestazioni calcolate alle condizioni di progetto');
   righe([['Resa frigorifera', R.kw ? `${kwt(R.kw)} kW` : '—'], ['Potenza assorbita (compressori)', R.pw ? `${kwt(R.pw)} kW` : '—'], ['EER', R.eer ? num(R.eer, 2) : '—'],
@@ -248,7 +248,7 @@ export function avviaConfiguratore(ctx) {
   const tog = (set, el, unico) => el.addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (!b) return; const v = b.dataset.v; set.has(v) ? set.delete(v) : set.add(v); C.sel = null; C.opt.clear(); aggiorna(); });
   tog(C.serie, $('#cfSerie')); tog(C.varianti, $('#cfVar')); tog(C.gas, $('#cfGas'));
   let t = 0;
-  for (const id of ['#cfKw', '#cfLwt', '#cfDt', '#cfAmb', '#cfAcq', '#cfPct', '#cfQta', '#cfCond', '#cfComp', '#cfFree', '#cfFluido', '#cfGwp', '#cfDry'])
+  for (const id of ['#cfKw', '#cfKwMax', '#cfLwt', '#cfDt', '#cfAmb', '#cfAcq', '#cfPct', '#cfQta', '#cfCond', '#cfComp', '#cfFree', '#cfFluido', '#cfGwp', '#cfDry'])
     $(id).addEventListener(id.match(/Kw|Lwt|Dt|Amb|Acq|Pct|Qta/) ? 'input' : 'change', () => { C.gwp = +$('#cfGwp').value; clearTimeout(t); t = setTimeout(() => { disegnaFiltri(); disegnaRisultati(); }, 160); });
   $('#cfRis').addEventListener('click', e => {
     const r = e.target.closest('.cf-r'); if (!r) return;

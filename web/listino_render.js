@@ -7,6 +7,7 @@
   const eur = v => v == null ? 'su richiesta' : nf(Math.round(v));
   const kU = c => 'u|' + c;
   const kO = (s, g, n, i) => ['o', s, g, n, i].join('|');
+  const sigla = G => { for (const r of G?.righe || []) for (const v of G.varianti) { const m = /^([A-Z]+\d*-[AWS])/.exec(r[v]?.c || ''); if (m) return m[1]; } return null; };
 
   function cella(o, k, base, fmt, vuoto = 'P.M.') {
     if (base == null) return `<span class="lr-rich">${vuoto}</span>`;
@@ -17,11 +18,12 @@
 
   function copertina(D, o, ss) {
     const s1 = ss.length === 1 ? ss[0] : null;
+    const sg = s1 && o.gas !== 'tutti' ? sigla(s1.gas[o.gas]) : null;
     const gas = [...new Set(ss.flatMap(s => Object.keys(s.gas)))].filter(g => g !== '—');
     return `<section class="lr-cop"><div class="dots"></div><div class="logo">${o.logo || ''}</div><div class="picto">${o.picto || ''}</div>
       <div class="in"><div class="num">${s1 ? esc(s1.numero) : '00'}</div><div class="lab">Listino prezzi / Price list · ${esc(D.versione)}</div>
-      <h1>${s1 ? 'Listino ' + esc(s1.nome) : 'Listino prezzi 2026'}</h1><div class="sub">${s1 ? esc(s1.sotto) : 'Refrigeratori d\'acqua, free cooling e dry cooler Procryon'}</div>
-      <div class="meta">${gas.map(g => `<span class="pill">${esc(g)}</span>`).join('')}<span class="pill acc">Versione provvisoria</span></div></div>
+      <h1>${sg ? 'Listino ' + esc(sg) : s1 ? 'Listino ' + esc(s1.nome) : 'Listino prezzi 2026'}</h1><div class="sub">${s1 ? esc(s1.sotto) + (sg ? ' · ' + esc(o.gas) : '') : 'Refrigeratori d\'acqua, free cooling e dry cooler Procryon'}</div>
+      <div class="meta">${(sg ? [o.gas] : gas).map(g => `<span class="pill">${esc(g)}</span>`).join('')}<span class="pill acc">Versione provvisoria</span></div></div>
       <div class="claim">Prezzi in euro, IVA esclusa<br>www.procryon.com</div></section>`;
   }
 
@@ -42,8 +44,9 @@
   }
 
   function testata(s, g) {
+    const sg = g ? sigla(s.gas[g]) : null;
     return `<div class="lr-testa"><div><b>${esc(s.cap_titolo)}</b><span>${esc(s.cap_titolo_en)}</span></div>
-      <div class="lr-cod"><span class="n">${esc(s.numero)}</span>${esc(s.nome.replace('Serie ', ''))}${g ? `<i>${esc(g)}</i>` : ''}</div></div>`;
+      <div class="lr-cod"><span class="n">${esc(s.numero)}</span>${esc(sg || s.nome.replace('Serie ', ''))}${g ? `<i>${esc(g)}</i>` : ''}</div></div>`;
   }
 
   function scheda(s, g, G) {
@@ -116,5 +119,5 @@
     }
     return h + appendice(D, ss);
   }
-  window.ListinoRender = { render, eur, nf };
+  window.ListinoRender = { render, eur, nf, sigla };
 })();

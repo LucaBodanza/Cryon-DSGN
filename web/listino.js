@@ -5,12 +5,13 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const eur = v => v == null ? 'su richiesta' : '€ ' + Math.round(v).toLocaleString('it-IT');
 const nf = (v, d = 1) => v == null ? '—' : Number(v).toLocaleString('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d });
 const CHIAVE = 'cryon.prezzi';
-let D = null, MOD = {}, H = {}, SEL = { serie: null, gas: 'tutti' };
+let D = null, MOD = {}, PUB = {}, H = {}, SEL = { serie: null, gas: 'tutti' }, MODO = 'vista';
+// PUB = prezzi pubblicati dagli Admin per il gruppo dell'utente (vedi accesso.js); MOD = bozza locale di chi modifica
 
 const leggi = () => { try { return JSON.parse(localStorage.getItem(CHIAVE) || '{}'); } catch (e) { return {}; } };
 const salva = () => { try { localStorage.setItem(CHIAVE, JSON.stringify(MOD)); } catch (e) { H.toast?.('Impossibile salvare su questo browser'); } conta(); };
 const kU = c => 'u|' + c;
-const prezzo = (k, base) => (k in MOD ? MOD[k] : base);
+const prezzo = (k, base) => (k in MOD ? MOD[k] : k in PUB ? PUB[k] : base);
 
 export function avviaListino(helper) {
   H = helper; MOD = leggi();
@@ -21,6 +22,9 @@ export function avviaListino(helper) {
   $('#leEsporta').onclick = esporta;
   $('#leImporta').onchange = importa;
   $('#leStampa').onclick = () => window.print();
+  $('#lePubblica').onclick = () => { $('#lePub').hidden = !$('#lePub').hidden; };
+  $('#lePubNo').onclick = () => { $('#lePub').hidden = true; };
+  $('#lePubOk').onclick = pubblicaPrezzi;
   $('#leDoc').addEventListener('change', e => {
     const i = e.target.closest('input[data-k]'); if (!i) return;
     const v = Number(String(i.value).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
@@ -34,13 +38,22 @@ export function avviaListino(helper) {
   });
 }
 
-export async function apriEditor(serieId = null) {
+export async function datiListino() {
   if (!D) {
     try { D = await fetch('dati/listino_dati.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null); } catch (e) { D = null; }
-    if (!D) return H.toast?.('Dati del listino non disponibili in questa versione');
-    $('#leSerie').innerHTML = '<option value="">Tutte le serie (listino completo)</option>' + D.serie.map(s => `<option value="${esc(s.id)}">${esc(s.numero)} · ${esc(s.nome)}</option>`).join('');
+    if (D) $('#leSerie').innerHTML = '<option value="">Tutte le serie (listino completo)</option>' + D.serie.map(s => `<option value="${esc(s.id)}">${esc(s.numero)} · ${esc(s.nome)}</option>`).join('');
   }
-  SEL = { serie: serieId, gas: 'tutti' };
+  try { PUB = (await window.CRYON_ACCESSO?.prezzi?.()) || {}; } catch (e) { PUB = {}; }
+  return D;
+}
+// modo 'vista' = listino da consultare e scaricare; 'modifica' = prezzi modificabili (solo chi ha il permesso)
+export async function apriEditor(serieId = null, gas = 'tutti', modo = 'modifica') {
+  if (!(await datiListino())) return H.toast?.('Dati del listino non disponibili in questa versione');
+  if (modo === 'modifica' && window.CRYON_ACCESSO && !window.CRYON_ACCESSO.puo('prezzi')) modo = 'vista';
+  MODO = modo;
+  document.body.classList.toggle('le-vista', modo === 'vista');
+  $('#lePubblica').hidden = !(modo === 'modifica' && window.CRYON_ACCESSO?.puo('prezzi')); $('#lePub').hidden = true;
+  SEL = { serie: serieId, gas: gas || 'tutti' };
   $('#leSerie').value = serieId || '';
   disegna();
   H.vai('listinoEd');
@@ -51,14 +64,14 @@ function gasVisibili(s) { return Object.keys(s.gas).filter(g => SEL.gas === 'tut
 
 function conta() {
   const n = Object.keys(MOD).length;
-  $('#leConta').textContent = n ? `${n} prezzi modificati su questo computer` : 'Prezzi di listino (nessuna modifica)';
+  $('#leConta').textContent = MODO === 'vista' ? 'Listino in consultazione' : n ? `${n} prezzi modificati in bozza (non ancora pubblicati)` : 'Nessuna modifica in bozza';
 }
 
 function disegna() {
   const ss = serieVisibili();
   const gasTutti = [...new Set(ss.flatMap(s => Object.keys(s.gas)))];
   $('#leGas').innerHTML = '<option value="tutti">Tutti i gas</option>' + gasTutti.map(g => `<option ${g === SEL.gas ? 'selected' : ''}>${esc(g)}</option>`).join('');
-  $('#leDoc').innerHTML = window.ListinoRender.render(D, { serie: SEL.serie, gas: SEL.gas, edit: true, mod: MOD, logo: H.svgLogo || '', picto: H.svgPicto || '' });
+  $('#leDoc').innerHTML = window.ListinoRender.render(D, { serie: SEL.serie, gas: SEL.gas, edit: MODO === 'modifica', mod: MODO === 'modifica' ? { ...PUB, ...MOD } : PUB, logo: H.svgLogo || '', picto: H.svgPicto || '' });
   conta();
 }
 
@@ -109,4 +122,37 @@ async function importa(e) {
     MOD = { ...MOD, ...j.prezzi }; salva(); disegna(); H.toast?.(`${Object.keys(j.prezzi).length} prezzi importati`);
   } catch (err) { H.toast?.('File non valido'); }
   e.target.value = '';
+}
+
+// ---------------------------------------------------------------- pubblicazione (Admin, versione web vDragon 5)
+// per ogni gruppo scelto: prezzi pubblicati = quelli già pubblicati per quel gruppo + la bozza; un prezzo uguale al listino base torna "base"
+function basi() {
+  const b = {};
+  for (const s of D.serie) for (const [g, G] of Object.entries(s.gas)) {
+    for (const r of G.righe) for (const v of G.varianti) if (r[v]?.p != null) b[kU(r[v].c)] = r[v].p;
+    for (const op of G.opz) op.val.forEach((v, i) => { if (v != null) b[['o', s.id, g, op.n, i].join('|')] = v; });
+  }
+  return b;
+}
+async function pubblicaPrezzi() {
+  const gruppi = [...document.querySelectorAll('#lePub input:checked')].map(x => x.value);
+  if (!gruppi.length) return H.toast?.('Scegli almeno un gruppo');
+  if (!Object.keys(MOD).length) return H.toast?.('Nessun prezzo in bozza da pubblicare');
+  const b = $('#lePubOk'); b.disabled = true; b.textContent = 'Pubblico…';
+  try {
+    const I = await import('./impostazioni.js');
+    const C = await I.cassaforte(window.CRYON_ACCESSO), B = basi(), file = [];
+    for (const g of gruppi) {
+      let ora = {};
+      try { const r = await fetch(`dati/prezzi_${g}.vd5`, { cache: 'no-cache' }); if (r.ok) ora = (await r.json()).prezzi || {}; } catch (e) { /* primo listino del gruppo */ }
+      const nuovi = { ...ora, ...MOD };
+      for (const k of Object.keys(nuovi)) if (B[k] === nuovi[k]) delete nuovi[k];
+      file.push(await I.scriviPrezzi(C, g, nuovi, window.CRYON_ACCESSO.nome));
+    }
+    const sha = await I.pubblica(C, file, `Cryon DSGN: prezzi per ${gruppi.join(', ')} (${window.CRYON_ACCESSO.nome})`);
+    if (gruppi.includes(window.CRYON_ACCESSO.gruppo)) PUB = { ...PUB, ...MOD };
+    MOD = {}; salva(); disegna(); $('#lePub').hidden = true;
+    H.toast?.(`Prezzi pubblicati (${sha}) · visibili sul sito in pochi minuti`);
+  } catch (e) { H.toast?.('Pubblicazione non riuscita: ' + e.message); }
+  b.disabled = false; b.textContent = 'Pubblica';
 }

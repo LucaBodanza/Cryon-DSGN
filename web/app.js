@@ -2,7 +2,7 @@
 import { avviaScena } from './scena.js';
 import { Libro } from './libro.js';
 import { avviaConfiguratore, apriConfiguratore } from './configuratore.js';
-import { avviaListino, apriEditor } from './listino.js';
+import { avviaListino, apriEditor, datiListino } from './listino.js';
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -52,10 +52,10 @@ function briciole() {
   $('#nIndietro').hidden = S.vista === 'home' || S.vista === 'intro';
   if (S.vista === 'menu') p.push('<b>Scelta macchina</b>');
   else if (S.vista === 'listino') p.push('<b>Listino prezzi</b>');
-  else if (S.vista === 'listinoEd') p.push('<span>Listino prezzi</span><span class="muted">/</span><b>Modifica prezzi</b>');
+  else if (S.vista === 'listinoEd') p.push(`<span>Listino prezzi</span><span class="muted">/</span><b>${document.body.classList.contains('le-vista') ? 'Consultazione' : 'Modifica prezzi'}</b>`);
   else if (S.vista === 'sfoglia' && S.sfFonte?.tipo) { b.innerHTML = `<span>Listino prezzi</span><span class="muted">/</span><b>${esc(S.sfFonte.titolo)}</b>`; return; }
   else if (S.vista !== 'home' && S.vista !== 'intro') p.push('<span>Libreria</span>');
-  if (c && ['catalogo', 'sfoglia', 'sotto'].includes(S.vista)) p.push(`<b>${esc(String(c.numero).padStart(2, '0'))} · ${esc(c.nome)}</b>`);
+  if (c && ['catalogo', 'sfoglia', 'sotto'].includes(S.vista)) p.push(`<b>${c.gruppo ? esc(c.gruppo.nome) + ' · ' : ''}${esc(sigla(c))}</b>`);
   if (S.vista === 'sfoglia') p.push(`<span>${S.sfFonte?.sotto ? esc(S.sfFonte.sotto) : 'Catalogo completo'}</span>`);
   if (S.vista === 'sotto') p.push('<span>Sotto-cataloghi</span>');
   if (S.vista === 'config') p.push('<b>Configuratore</b>');
@@ -91,31 +91,73 @@ function libro3d(c, logo, picto, i = 0, grande = false) {
   const m = c.manifest;
   const img = m && m.pronto ? `<img src="cat/${encodeURI(m.slug)}/${m.copertina}?v=${encodeURIComponent(m.generato)}" alt="">` : copertinaDisegnata(c, logo, picto);
   const badge = c.stato === 'pronto' ? '' : `<span class="pill ${c.stato === 'da generare' ? 'acc' : ''} badge">${esc(c.stato)}</span>`;
-  const meta = grande ? '' : `<div class="meta"><b>${esc(c.nome)}</b>${c.stato === 'pronto' ? `${m.pagine} pagine · ${m.configurazioni} configurazioni` : `${c.configurazioni} configurazioni · ${esc(c.stato)}`}</div>`;
+  const meta = grande ? '' : `<div class="meta"><b>${esc(sigla(c))}${c.gas?.[0] ? ` <span class="gs">${esc(c.gas[0])}</span>` : ''}</b>${c.stato === 'pronto' ? `${m.pagine} pagine · ${m.configurazioni} configurazioni` : `${c.configurazioni} configurazioni · ${esc(c.stato)}`}</div>`;
   return `<div class="libro3d ${grande ? 'grande' : ''} ${c.stato === 'in arrivo' ? 'spento' : ''}" tabindex="0" data-n="${c.numero}" style="animation-delay:${0.08 * i}s">
-    <div class="fr">${img}</div><div class="dorso">${String(c.numero).padStart(2, '0')} · ${esc(c.nome)}</div><div class="tg"></div><div class="rt"></div>
+    <div class="fr">${img}</div><div class="dorso">${esc(sigla(c))}${c.gas?.[0] ? ' · ' + esc(c.gas[0]) : ''}</div><div class="tg"></div><div class="rt"></div>
     ${badge}<div class="ombra"></div>${meta}</div>`;
+}
+// Libreria a due livelli (16/10/2026, richiesta Riccardo): 5 famiglie (PRO, PROS, F-PRO, F-PROS, PRO-DRY) → un catalogo per refrigerante
+const famiglie = () => {
+  const m = new Map();
+  for (const c of S.cataloghi) {
+    const g = c.gruppo || { numero: c.numero, id: c.nome, nome: c.nome, sotto: '' };
+    if (!m.has(g.id)) m.set(g.id, { ...g, cat: [] });
+    m.get(g.id).cat.push(c);
+  }
+  return [...m.values()].sort((a, b) => a.numero - b.numero);
+};
+const sigla = c => c.sigla || idSerie(c);
+function libroFam(f, picto, i) {
+  const pronti = f.cat.filter(c => c.stato === 'pronto');
+  const conf = f.cat.reduce((a, c) => a + (c.manifest?.configurazioni || c.configurazioni || 0), 0);
+  return `<div class="libro3d fam" tabindex="0" data-f="${esc(f.id)}" style="animation-delay:${0.08 * i}s">
+    <div class="fr"><div class="cov"><div class="p">${picto}</div><div class="n">${String(f.numero).padStart(2, '0')}</div>
+      <div class="t">${esc(f.nome)}</div><div class="s">${esc(f.sotto || '')}</div>
+      <div class="sg">${f.cat.map(c => `<span>${esc(sigla(c))}</span>`).join('')}</div></div></div>
+    <div class="dorso">${String(f.numero).padStart(2, '0')} · ${esc(f.nome)}</div><div class="tg"></div><div class="rt"></div>
+    <div class="ombra"></div>
+    <div class="meta"><b>${esc(f.nome)}</b>${f.cat.length} ${f.cat.length === 1 ? 'catalogo' : 'cataloghi'} · ${conf} configurazioni${pronti.length < f.cat.length ? ` · ${pronti.length} pronti` : ''}</div></div>`;
 }
 async function libreria() {
   S.cataloghi = await api('/api/cataloghi');
-  const [logo, picto] = await Promise.all([svg('logo'), svg('pittogramma')]);
+  window.CRYON_CATALOGHI = S.cataloghi;
+  if (window.CRYON_ACCESSO?.filtraCataloghi) S.cataloghi = window.CRYON_ACCESSO.filtraCataloghi(S.cataloghi);
+  const pronti = S.cataloghi.filter(c => c.stato === 'pronto').length;
+  const conf = S.cataloghi.reduce((a, c) => a + (c.manifest?.configurazioni || c.configurazioni || 0), 0);
+  const pag = S.cataloghi.reduce((a, c) => a + (c.manifest?.pagine || 0), 0);
+  $('#numeri').innerHTML = `<div><b>${famiglie().length}</b><span>famiglie · families</span></div><div><b>${S.cataloghi.length}</b><span>cataloghi per gas</span></div>
+    <div><b>${conf}</b><span>configurazioni</span></div><div><b>${pag}</b><span>pagine generate</span></div>`;
   const sc = $('#scaffale');
-  sc.innerHTML = S.cataloghi.map((c, i) => libro3d(c, logo, picto, i)).join('');
+  $('#scSx').onclick = () => sc.scrollBy({ left: -560, behavior: 'smooth' });
+  $('#scDx').onclick = () => sc.scrollBy({ left: 560, behavior: 'smooth' });
+  if (!sc.dataset.ruota) { sc.dataset.ruota = 1; sc.addEventListener('wheel', e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { sc.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false }); }
+  await scaffale();
+  disegnaMenu();
+}
+// disegna lo scaffale: famiglie (S.fam = null) oppure i cataloghi di una famiglia
+async function scaffale(fam = S.fam) {
+  const [logo, picto] = await Promise.all([svg('logo'), svg('pittogramma')]);
+  const ff = famiglie();
+  if (fam && !ff.some(f => f.id === fam)) fam = null;
+  if (ff.length === 1) fam = ff[0].id;                       // un solo gruppo visibile: si entra direttamente
+  S.fam = fam;
+  const sc = $('#scaffale'), f = ff.find(x => x.id === fam);
+  sc.innerHTML = f ? f.cat.map((c, i) => libro3d(c, logo, picto, i)).join('') : ff.map((x, i) => libroFam(x, picto, i)).join('');
+  sc.scrollTo({ left: 0 });
   sc.querySelectorAll('.libro3d').forEach(el => {
-    const apri = () => apriCatalogo(+el.dataset.n, el);
+    const apri = () => {
+      if (!el.dataset.f) return apriCatalogo(+el.dataset.n, el);
+      const ff1 = ff.find(x => x.id === el.dataset.f);
+      return ff1?.cat.length === 1 ? apriCatalogo(ff1.cat[0].numero, el) : scaffale(el.dataset.f);   // famiglia con un solo catalogo: si apre quello
+    };
     el.addEventListener('click', apri);
     el.addEventListener('keydown', e => { if (e.key === 'Enter') apri(); });
   });
-  const pronti = S.cataloghi.filter(c => c.stato === 'pronto').length;
-  const conf = S.cataloghi.reduce((a, c) => a + (c.configurazioni || 0), 0);
-  const pag = S.cataloghi.reduce((a, c) => a + (c.manifest?.pagine || 0), 0);
-  $('#numeri').innerHTML = `<div><b>${S.cataloghi.length}</b><span>serie · series</span></div><div><b>${conf}</b><span>configurazioni</span></div>
-    <div><b>${pronti}</b><span>cataloghi pronti</span></div><div><b>${pag}</b><span>pagine generate</span></div>`;
-  $('#scaffaleInfo').textContent = `${pronti} pronto · ${S.cataloghi.filter(c => c.stato === 'da generare').length} da generare · ${S.cataloghi.filter(c => c.stato === 'in arrivo').length} in arrivo`;
-  disegnaMenu(); filtroScaffale();
-  $('#scSx').onclick = () => sc.scrollBy({ left: -560, behavior: 'smooth' });
-  $('#scDx').onclick = () => sc.scrollBy({ left: 560, behavior: 'smooth' });
-  sc.addEventListener('wheel', e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { sc.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
+  $('#scaffaleTit').innerHTML = f && ff.length > 1
+    ? `<button class="btn ghost mini" id="scFam">← Tutte le famiglie</button><span class="lab">${String(f.numero).padStart(2, '0')} · ${esc(f.nome)}</span>`
+    : '<span class="lab">La libreria · The library</span>';
+  $('#scFam')?.addEventListener('click', () => scaffale(null));
+  filtroScaffale();
 }
 
 // volo del libro dalla libreria alla scheda (FLIP)
@@ -170,7 +212,7 @@ function schedaInfo() {
     corpo = `<div class="stat"><div><b>${c.configurazioni}</b><span>configurazioni</span></div><div><b>${kw(c.kw?.[0])}</b><span>kW min</span></div><div><b>${kw(c.kw?.[1])}</b><span>kW max</span></div><div><b>—</b><span>pagine</span></div></div>
       <div class="azioni"><button class="tile" id="aGenera"><span class="ic">${ICON.libro}</span><span class="go">→</span><h3>Genera il catalogo</h3><p>Catalogo completo + sotto-cataloghi in PDF (qualche minuto)</p></button></div>`;
   }
-  $('#catInfo').innerHTML = `<div class="num">${String(c.numero).padStart(2, '0')}</div>
+  $('#catInfo').innerHTML = `<div class="num">${String(c.gruppo?.numero ?? c.numero).padStart(2, '0')}${c.gruppo ? `<small>${esc(c.gruppo.nome)}</small>` : ''}</div>
     <h2>${esc(c.nome)}</h2>${c.nome_en ? `<div class="en">${esc(c.nome_en)}</div>` : ''}
     <p class="sub">${esc(m?.sottotitolo || c.sottotitolo || '')}${m?.sottotitolo_en ? `<br><span class="muted">${esc(m.sottotitolo_en)}</span>` : ''}</p>
     <div class="chips">${gas}${c.interno ? `<span class="pill">${esc(c.interno)}</span>` : ''}</div>${corpo}<div id="lavoro"></div>`;
@@ -220,7 +262,7 @@ async function offline(c) {
   const scarica = async L => {
     let fatti = 0;
     for (const u of L) {
-      if (!(await cache.match(u))) { const r = await fetch(u); if (!r.ok) throw new Error(`scaricamento non riuscito (${r.status})`); await cache.put(u, r); }
+      if (!(await cache.match(u))) { const r = await fetch(u, { headers: { 'x-vd5-grezzo': '1' } }); if (!r.ok) throw new Error(`scaricamento non riuscito (${r.status})`); await cache.put(u, r); }
       b.textContent = `Scarico… ${Math.round(++fatti / L.length * 100)}%`;
     }
   };
@@ -364,14 +406,14 @@ const PROFILO = {
   'PRO-DRY': { cond: 'A', comp: null, dry: true },
 };
 const idSerie = c => String(c.nome || '').replace(/^Serie\s+/, '');
-const profilo = c => PROFILO[idSerie(c)] || null;
+const profilo = c => PROFILO[c.serie_base || idSerie(c)] || null;
 const ORDINE_GAS = ['R410A', 'R32', 'R454B', 'R134A', 'R513A', 'R1234ZE'];
 const gasDi = c => (c.gas || []).filter(Boolean);
 function leggiScelte() {
-  try { const j = JSON.parse(localStorage.getItem('cryon.scelte') || 'null'); if (j && typeof j === 'object') return { cond: j.cond || 'tutte', gas: j.gas || 'tutti', comp: j.comp || 'tutti' }; } catch (e) { /* nessuna scelta salvata */ }
+  try { localStorage.removeItem('cryon.scelte'); const j = JSON.parse(sessionStorage.getItem('cryon.scelte') || 'null'); if (j && typeof j === 'object') return { cond: j.cond || 'tutte', gas: j.gas || 'tutti', comp: j.comp || 'tutti' }; } catch (e) { /* nessuna scelta salvata */ }
   return { cond: 'tutte', gas: 'tutti', comp: 'tutti' };
 }
-function salvaScelte() { try { localStorage.setItem('cryon.scelte', JSON.stringify(S.scelte)); } catch (e) { /* preferenza non salvata */ } }
+function salvaScelte() { try { sessionStorage.setItem('cryon.scelte', JSON.stringify(S.scelte)); } catch (e) { /* preferenza non salvata */ } }
 const attive = sc => sc.cond !== 'tutte' || sc.gas !== 'tutti' || sc.comp !== 'tutti';
 // una serie risponde alle scelte? (dry cooler: non ha compressori né gas → resta solo se non li hai scelti)
 function corrisponde(c, sc = S.scelte) {
@@ -402,12 +444,12 @@ function disegnaMenu() {
       const prova = { ...sc, [chiave]: v };
       const n = serieOk(prova).length;
       const off = v !== opz[0][0] && n === 0;       // combinazione impossibile con le altre due scelte
-      return `<button class="mn-o ${sc[chiave] === v ? 'on' : ''}" data-k="${chiave}" data-v="${esc(v)}" ${off ? 'disabled title="Nessuna serie con le altre scelte"' : ''}><b>${esc(it)}</b>${en ? `<span>${esc(en)}</span>` : ''}</button>`;
+      return `<button class="mn-o ${sc[chiave] === v ? 'on' : ''}" data-k="${chiave}" data-v="${esc(v)}" ${off ? 'disabled title="Nessun catalogo con le altre scelte"' : ''}><b>${esc(it)}</b>${en ? `<span>${esc(en)}</span>` : ''}</button>`;
     }).join('');
   }
   const ok = serieOk(sc), et = etichettaScelte();
-  $('#mnRis').innerHTML = `<div class="mn-n"><b>${ok.length}</b><span>${ok.length === 1 ? 'serie' : 'serie'} · ${ok.length === 1 ? 'series' : 'series'}${et.length ? ' · ' + esc(et.join(' · ')) : ' · tutte le macchine'}</span></div>
-    <div class="mn-serie">${ok.map(c => `<span class="pill">${esc(idSerie(c))}</span>`).join('') || '<span class="muted">Nessuna serie con queste scelte</span>'}</div>`;
+  $('#mnRis').innerHTML = `<div class="mn-n"><b>${ok.length}</b><span>${ok.length === 1 ? 'catalogo' : 'cataloghi'}${et.length ? ' · ' + esc(et.join(' · ')) : ' · tutte le macchine'}</span></div>
+    <div class="mn-serie">${ok.map(c => `<span class="pill">${esc(sigla(c))}</span>`).join('') || '<span class="muted">Nessun catalogo con queste scelte</span>'}</div>`;
   $('#mnVai').disabled = !ok.length;
   document.querySelectorAll('#menu .mn-o').forEach(b => b.onclick = () => {
     S.scelte[b.dataset.k] = b.dataset.v;
@@ -418,40 +460,62 @@ function disegnaMenu() {
 }
 function filtroScaffale() {
   const sc = $('#scaffale'); if (!sc) return;
-  const ok = new Set(serieOk(S.scelte).map(c => c.numero));
-  sc.querySelectorAll('.libro3d').forEach(el => el.classList.toggle('filtrato', !ok.has(+el.dataset.n)));
+  const okC = serieOk(S.scelte), ok = new Set(okC.map(c => c.numero));
+  const okF = new Set(okC.map(c => c.gruppo?.id || c.nome));
+  sc.querySelectorAll('.libro3d').forEach(el => el.classList.toggle('filtrato', el.dataset.f ? !okF.has(el.dataset.f) : !ok.has(+el.dataset.n)));
   const et = etichettaScelte();
   $('#filtroAtt').innerHTML = et.length
     ? `<span class="lab">Filtri attivi</span> ${et.map(t => `<span class="pill cool">${esc(t)}</span>`).join(' ')} <button class="btn ghost mini" id="fCambia">Cambia</button> <button class="btn ghost mini" id="fAzzera">Mostra tutto</button>`
     : '';
   $('#fCambia')?.addEventListener('click', () => apriMenu());
   $('#fAzzera')?.addEventListener('click', () => { S.scelte = { cond: 'tutte', gas: 'tutti', comp: 'tutti' }; salvaScelte(); filtroScaffale(); });
-  const n = ok.size;
-  $('#scaffaleInfo').textContent = et.length ? `${n} ${n === 1 ? 'serie' : 'serie'} su ${S.cataloghi.length}` : `${S.cataloghi.length} serie`;
+  const n = ok.size, nf = famiglie().length;
+  $('#scaffaleInfo').textContent = et.length ? `${n} ${n === 1 ? 'catalogo' : 'cataloghi'} su ${S.cataloghi.length}` : (S.fam ? `${famiglie().find(f => f.id === S.fam)?.cat.length || 0} cataloghi` : `${nf} famiglie · ${S.cataloghi.length} cataloghi`);
   if (et.length) sc.scrollTo({ left: 0 });
+}
+// dopo la scelta macchina: se tutto sta in una famiglia si apre quella
+function mostraScelte() {
+  const fam = [...new Set(serieOk(S.scelte).map(c => c.gruppo?.id || c.nome))];
+  scaffale(fam.length === 1 ? fam[0] : null);
 }
 function apriMenu() { disegnaMenu(); vai('menu'); }
 function avviaMenu() {
   S.scelte = leggiScelte();
-  $('#mnVai').onclick = () => { filtroScaffale(); vai('home', { push: false }); S.storia = []; };
+  $('#mnVai').onclick = () => { mostraScelte(); vai('home', { push: false }); S.storia = []; };
   $('#mnConf').onclick = () => apriConfiguratore(S.scelte);
-  $('#mnTutto').onclick = () => { S.scelte = { cond: 'tutte', gas: 'tutti', comp: 'tutti' }; salvaScelte(); filtroScaffale(); vai('home', { push: false }); S.storia = []; };
+  $('#mnTutto').onclick = () => { S.scelte = { cond: 'tutte', gas: 'tutti', comp: 'tutti' }; salvaScelte(); scaffale(null); vai('home', { push: false }); S.storia = []; };
   $('#nScelte').onclick = apriMenu; $('#hScelte').onclick = apriMenu;
   $('#nListino').onclick = apriListino; $('#hListino').onclick = apriListino;
   $('#nIndietro').onclick = indietro;
 }
 
-// ================================================================ listino prezzi (PDF in /listini/, elenco in dati/listini.json)
-let LISTINI = null;
+// ================================================================ listino prezzi (impaginato dal vivo da dati/listino_dati.json + prezzi pubblicati)
+// 00 completo + per famiglia (01 PRO, 02 PROS, …) un listino per refrigerante con la sigla del catalogo (PRO8-A, PRO5-A, …)
 async function apriListino() {
-  if (!LISTINI) { try { LISTINI = await fetch('dati/listini.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null); } catch (e) { LISTINI = null; } }
   const c = $('#liCorpo');
-  if (!LISTINI?.completo) c.innerHTML = '<p class="vuoto">Listino non ancora disponibile in questa versione.</p>';
+  const D = await datiListino();
+  const puo = !window.CRYON_ACCESSO || window.CRYON_ACCESSO.puo('prezzi');
+  if (!D) c.innerHTML = '<p class="vuoto">Listino non ancora disponibile in questa versione.</p>';
   else {
-    const L = LISTINI, scheda = (x, cls) => `<div class="li-c ${cls}"><button class="li-apri" data-u="${esc(x.file)}" data-t="${esc(x.titolo)}"><span class="li-n">${esc(x.numero)}</span><b>${esc(x.titolo)}</b><span>${esc(x.sotto || '')}</span><i>${esc(x.pagine)} pagine · PDF</i></button><button class="btn ghost mini li-mod" data-s="${esc(x.id || '')}">Modifica prezzi</button></div>`;
-    c.innerHTML = `<div class="lab li-lab">Listino principale</div>${scheda(L.completo, 'grande')}<div class="lab li-lab">Listini per serie · stesso numero del catalogo</div><div class="li-griglia">${L.serie.map(x => scheda(x, '')).join('')}</div>`;
-    c.querySelectorAll('.li-mod').forEach(b => b.onclick = () => apriEditor(b.dataset.s || null));
-    c.querySelectorAll('.li-apri').forEach(b => b.onclick = () => sfoglia({ url: 'listini/' + encodeURI(b.dataset.u), titolo: b.dataset.t, tipo: 'listino prezzi' }));
+    const vede = window.CRYON_ACCESSO?.serieListino ? window.CRYON_ACCESSO.serieListino() : null;   // User-Select: solo le serie permesse
+    const R = window.ListinoRender;
+    const scheda = (n, tit, sotto, info, serie, gas, cls) => `<div class="li-c ${cls}"><button class="li-apri" data-s="${esc(serie || '')}" data-g="${esc(gas)}"><span class="li-n">${esc(n)}</span><b>${esc(tit)}</b><span>${esc(sotto || '')}</span><i>${esc(info)}</i></button>${puo ? `<button class="btn ghost mini li-mod" data-s="${esc(serie || '')}" data-g="${esc(gas)}">Modifica prezzi</button>` : ''}</div>`;
+    let h = vede ? '' : `<div class="lab li-lab">Listino principale</div>${scheda('00', 'Listino completo 2026', 'Tutte le famiglie Procryon, divise per serie e refrigerante', 'impaginato dal vivo · scarica in PDF', null, 'tutti', 'grande')}`;
+    for (const cap of D.capitoli) {
+      const voci = [];
+      for (const id of cap.serie) {
+        const s = D.serie.find(x => x.id === id); if (!s) continue;
+        for (const [g, G] of Object.entries(s.gas)) {
+          if (vede && !vede.includes(`${id}|${g}`)) continue;
+          const sg = g === '—' ? s.nome.replace('Serie ', '') : (R.sigla(G) || s.nome);
+          voci.push(scheda(cap.numero, sg, g === '—' ? s.sotto : `${s.nome.replace('Serie ', '')} · ${g}`, `${G.righe.length} taglie${G.opz.length ? ' · ' + G.opz.length + ' optional' : ''}`, id, g === '—' ? 'tutti' : g, ''));
+        }
+      }
+      if (voci.length) h += `<div class="lab li-lab">${esc(cap.numero)} · ${esc(cap.titolo)}</div><div class="li-griglia">${voci.join('')}</div>`;
+    }
+    c.innerHTML = h;
+    c.querySelectorAll('.li-apri').forEach(b => b.onclick = () => apriEditor(b.dataset.s || null, b.dataset.g, 'vista'));
+    c.querySelectorAll('.li-mod').forEach(b => b.onclick = () => apriEditor(b.dataset.s || null, b.dataset.g, 'modifica'));
   }
   vai('listino');
 }

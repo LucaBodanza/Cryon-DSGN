@@ -436,3 +436,17 @@ body.v-listinoEd #barra { background: rgba(22,19,20,.96); }
 .le-doc .lr-cop { margin: -14mm -13mm 10mm; }
 .le-doc .lr-sez, .le-doc .lr-indice, .le-doc .lr-div, .le-doc .lr-app { margin-top: 12mm; padding-top: 6mm; border-top: 1px dashed #CFCBCA; }
 @media print { .le-doc .lr-sez, .le-doc .lr-indice, .le-doc .lr-div, .le-doc .lr-app { margin-top: 0; padding-top: 0; border-top: 0; } }
+
+/* libreria a famiglie (16/10/2026) */
+.sc-tit { display: inline-flex; gap: 12px; align-items: center; }
+.libro3d.fam .fr { box-shadow: 7px -7px 0 -1px #2f2a2b, 14px -14px 0 -2px #262122, 0 18px 40px rgba(0,0,0,.45); overflow: visible; }
+.libro3d.fam .cov .sg { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 3px; }
+.libro3d.fam .cov .sg span { font-family: var(--mono, "Plex Mono", monospace); font-size: 8px; letter-spacing: .04em; color: #F29C1F; border: 1px solid rgba(242,156,31,.45); border-radius: 3px; padding: 1px 4px; }
+.libro3d .meta .gs { font-family: var(--mono, "Plex Mono", monospace); font-size: 10.5px; color: #F29C1F; margin-left: 4px; font-weight: 400; }
+#catInfo .num small { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); font-family: var(--mono, "Plex Mono", monospace); margin-top: 4px; }
+/* listino: consultazione (16/10/2026) — senza strumenti di modifica */
+body.le-vista #listinoEd .le-gr, body.le-vista #leRipristina, body.le-vista #leEsporta, body.le-vista #listinoEd label.btn { display: none; }
+.le-pub { position: sticky; top: 64px; z-index: 3; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 0 auto 12px; max-width: 900px; padding: 12px 16px; border-radius: 12px; background: #231F20; border: 1px solid #F29C1F; color: #fff; }
+.le-pub[hidden] { display: none; }
+body.no-pdf #leStampa, body.no-pdf .secondarie a[href$=".pdf"], body.no-pdf #aOffline { display: none !important; }
+body.u-select #leSerie, body.u-select #leGas { display: none; }
