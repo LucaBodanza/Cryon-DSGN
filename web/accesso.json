@@ -2,7 +2,7 @@
  "v": 1,
  "app": "Cryon DSGN",
  "chiave": "vDragon 5",
- "agg": "2026-10-16T15:09:05.000Z",
+ "agg": "2026-10-16T17:01:08.366Z",
  "account": [
   {
    "id": "dev-luca",
@@ -10,17 +10,23 @@
    "r": "Admin DEV · Brand Designer - Developer",
    "t": "dev",
    "i": "LB",
-   "att": true,
-   "rev": 1,
+   "att": false,
+   "rev": 2,
    "ka": {
     "v": "gBZJgC0pqphErJbe",
     "w": "7NQCyvgU5wsLS2TtQZff3E3/88uPmeUtGuoHvxk0oXANY1jp2Q2nBrpJCrnungWF"
    },
    "k": {
-    "v": "bX7H7Qa7S9f7yO0j",
-    "w": "qog28HgG5AHxuPvWcSgWIaiqzEqQSIEHtJwpF2qX6Qk2AV33q/GFQmtMT8bKxNl9XnLGXmfxNJwYzGZixpbfJyhNZDSS5LaNA5YXcQ=="
+    "v": "6AzPcL2J22yn3Ya9",
+    "w": "Z5fyD5F84EB0KnF/hGq1PxyT6quik7WAWdWMlc9ZRBW13sdC93ZkhamwBBK86+ceXPmCxfr2y8lN/BVFmtXWx6bbt1CCM3jxUEgJ"
    },
-   "p": {}
+   "p": {},
+   "s": "k0gp1yrgDjoznC9+l9xe1w==",
+   "it": 600000,
+   "pw": {
+    "v": "GL6A4+26VBUWaVOX",
+    "w": "PH8CADOfKIx/imwWOHzQQSp01IEfw2krTCqf0xgtXoYtQIHInRO0LU9cLR8BaVQa"
+   }
   }
  ]
 }
