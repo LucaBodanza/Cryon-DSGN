@@ -2,7 +2,7 @@
  "v": 1,
  "app": "Cryon DSGN",
  "chiave": "vDragon 5",
- "agg": "2026-10-16T17:02:17.253Z",
+ "agg": "2026-10-16T20:44:27.195Z",
  "account": [
   {
    "id": "dev-luca",
@@ -17,8 +17,8 @@
     "w": "7NQCyvgU5wsLS2TtQZff3E3/88uPmeUtGuoHvxk0oXANY1jp2Q2nBrpJCrnungWF"
    },
    "k": {
-    "v": "hsUpsXdKRjuW++gw",
-    "w": "6fwlk+CaYYaXPG57PJcRLs1DGbts5U1UirCHx5wKseLu+CF5UhP2YR1ty+LpRzoQskLjiT0lqRT18+M1sT2leK+IE8rkNROsYmWZ"
+    "v": "Z0yEQE1wmzO/h1dw",
+    "w": "M3jqocuODyxF+X6axFUyf9vcDEQY1t58g8+x3YymJY/6CMGvk6LYbQj/lYuyM2yrak10jBTOzkJXhydXyRqOHvrjB8DSuyzGMDbr"
    },
    "p": {},
    "s": "k0gp1yrgDjoznC9+l9xe1w==",
@@ -26,6 +26,52 @@
    "pw": {
     "v": "GL6A4+26VBUWaVOX",
     "w": "PH8CADOfKIx/imwWOHzQQSp01IEfw2krTCqf0xgtXoYtQIHInRO0LU9cLR8BaVQa"
+   }
+  },
+  {
+   "id": "admin-mvbfmm9h",
+   "n": "Riccardo Pelizzari",
+   "r": "CEO - Sales & Application Engineering",
+   "t": "admin",
+   "i": "RP",
+   "rev": 1,
+   "p": {},
+   "s": "azbNPrdW1+F1w4MFfVJrYA==",
+   "it": 600000,
+   "pw": {
+    "v": "sQ4Zvj2e5id0hJxw",
+    "w": "GvCj+nR7k6ZVojtR9qg1jAhbhqiLop4l6PKFphxnTLNTR4KZIf5mRTNHXZ/KsU9M"
+   },
+   "ka": {
+    "v": "tmjKPJpxGXomyX3V",
+    "w": "ZYEAYWvKlFnGagNC6nYwERIz7WqS8V0J1AWAw16FOw4c/cXBBBTLwTOu6h6tZIwt"
+   },
+   "k": {
+    "v": "GLiuPCsu/oPT6ikz",
+    "w": "pKZwUM69kEBL2p4f+QLVUZejScn290q5Pa//tdYmJTKIia3BrKkkDC328PU8/xXwRqMglOOhnQ7Sd8qKqdzk1DlB06fTBGE3WUTo"
+   }
+  },
+  {
+   "id": "admin-mvbfphgx",
+   "n": "Marco",
+   "r": "CEO - Commerciale",
+   "t": "admin",
+   "i": "M",
+   "rev": 1,
+   "p": {},
+   "s": "EqBvQriKdqCSVaoUSWUqJw==",
+   "it": 600000,
+   "pw": {
+    "v": "qncFTVc0nQIZrXHN",
+    "w": "SzLl2QBycLRASAbijW8YRGPidC3fSJDTcK5KRnwIPLvsLygy/vK8d0EtbpTsuSgF"
+   },
+   "ka": {
+    "v": "f5NJZsG8U/8j6K+F",
+    "w": "fpPf6ymiGIBC0qNvGMPJi0a+OR0C45jexelj7G+dh/Vqzy8qWsLGXCME//AooJ3u"
+   },
+   "k": {
+    "v": "5++eOteQkgmf/l53",
+    "w": "EwKh2lNsdWQG57Gv8Xt3tPdaISvxRqVLPIbPLFCHufQKMqrPo76BkmdvuyV53PePc8l7Hz4j+QMmmrNuvQZBii1qLcy/YZTuwUBt"
    }
   }
  ]
