@@ -2,7 +2,7 @@
  "v": 1,
  "app": "Cryon DSGN",
  "chiave": "vDragon 5",
- "agg": "2026-10-16T20:44:27.195Z",
+ "agg": "2026-10-20T14:39:15.046Z",
  "account": [
   {
    "id": "dev-luca",
@@ -17,8 +17,8 @@
     "w": "7NQCyvgU5wsLS2TtQZff3E3/88uPmeUtGuoHvxk0oXANY1jp2Q2nBrpJCrnungWF"
    },
    "k": {
-    "v": "Z0yEQE1wmzO/h1dw",
-    "w": "M3jqocuODyxF+X6axFUyf9vcDEQY1t58g8+x3YymJY/6CMGvk6LYbQj/lYuyM2yrak10jBTOzkJXhydXyRqOHvrjB8DSuyzGMDbr"
+    "v": "+2iLV2FrHsgGnvYW",
+    "w": "oJon+ZLetJEBSy8XAfqDuX1hAlFy5ZYLTkQ7lLPOeccyjyR/8/AJr7pKMnWrYrkAdfcqa50gZ5IllpBSZ84eiV/F6LMhxmwsKe/A"
    },
    "p": {},
    "s": "k0gp1yrgDjoznC9+l9xe1w==",
@@ -34,22 +34,23 @@
    "r": "CEO - Sales & Application Engineering",
    "t": "admin",
    "i": "RP",
-   "rev": 1,
+   "rev": 2,
    "p": {},
-   "s": "azbNPrdW1+F1w4MFfVJrYA==",
+   "s": "NK3THJcIHIQzfP+GHpyRmg==",
    "it": 600000,
    "pw": {
-    "v": "sQ4Zvj2e5id0hJxw",
-    "w": "GvCj+nR7k6ZVojtR9qg1jAhbhqiLop4l6PKFphxnTLNTR4KZIf5mRTNHXZ/KsU9M"
+    "v": "bTLtTHZZDzrztCHJ",
+    "w": "5J6EM+u0cQCB9li8lKZYE9sM2oLThCkHNy7JrA7Btn6fVy6eCBIa1wkhSjdVTZ/R"
    },
    "ka": {
     "v": "tmjKPJpxGXomyX3V",
     "w": "ZYEAYWvKlFnGagNC6nYwERIz7WqS8V0J1AWAw16FOw4c/cXBBBTLwTOu6h6tZIwt"
    },
    "k": {
-    "v": "GLiuPCsu/oPT6ikz",
-    "w": "pKZwUM69kEBL2p4f+QLVUZejScn290q5Pa//tdYmJTKIia3BrKkkDC328PU8/xXwRqMglOOhnQ7Sd8qKqdzk1DlB06fTBGE3WUTo"
-   }
+    "v": "OV/7LnMyT3x/n/SD",
+    "w": "3QZZBkRxluvO/qq9j7yUVHnoDXEoJIhWv0F4p9mR9Xm3Ex0RUc2ama9ogBISfTcFn28yQIQlm4QOYqRS1z8GIJwAtQeFUqtZKuTf"
+   },
+   "att": false
   },
   {
    "id": "admin-mvbfphgx",
@@ -70,8 +71,8 @@
     "w": "fpPf6ymiGIBC0qNvGMPJi0a+OR0C45jexelj7G+dh/Vqzy8qWsLGXCME//AooJ3u"
    },
    "k": {
-    "v": "5++eOteQkgmf/l53",
-    "w": "EwKh2lNsdWQG57Gv8Xt3tPdaISvxRqVLPIbPLFCHufQKMqrPo76BkmdvuyV53PePc8l7Hz4j+QMmmrNuvQZBii1qLcy/YZTuwUBt"
+    "v": "Hiet9KfbzXaAEZqL",
+    "w": "20Jk3SH+JMRda9BPZeXPFoczBTtpduBSFHPDzx5RnP+7aZ+UhxDEhsulFhdFC8Kv0yryiHDWgJ+3aKK7VgKTzMkOSId02D+TXv3B"
    }
   }
  ]
