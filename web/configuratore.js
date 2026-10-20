@@ -20,6 +20,9 @@ async function dati() {
   return C.D;
 }
 
+export async function datiConfiguratore(ctx) { if (!C.ctx) C.ctx = ctx; return dati(); }
+export function coeffGlicole(f) { return C.D ? coeffFluido(f) : 1; }
+
 // ---------------------------------------------------------------- resa alle condizioni (interpolazione nella matrice LWT × condensazione)
 function griglia(u) {
   if (!u._g) {

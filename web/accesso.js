@@ -212,7 +212,7 @@ function permessi(s, acc) {
       if (x === 'account') return s.tipo === 'dev';
       if (x === 'prezzi' || x === 'impostazioni') return admin;
       if (admin) return true;
-      if (['conf', 'listino', 'pdf'].includes(x)) return !!p[x];
+      if (['conf', 'listino', 'pdf', 'risp'].includes(x)) return !!p[x];
       return true;
     },
     // User-Select: solo i cataloghi permessi (gli altri non si possono neanche aprire: niente chiave)
@@ -232,6 +232,7 @@ function strumenti(API) {             // nasconde ciò che l'account non può us
   const nascondi = (sel, no) => document.querySelectorAll(sel).forEach(x => { x.hidden = no; if (no) x.style.display = 'none'; });
   nascondi('#nConfig, #hConfig, #mnConf', !API.puo('conf'));
   nascondi('#nListino, #hListino', !API.puo('listino'));
+  nascondi('#nRisp, #hRisp', !API.puo('risp'));
   document.body.classList.toggle('no-pdf', !API.puo('pdf'));
   document.body.classList.toggle('u-select', API.tipo === 'select');
 }

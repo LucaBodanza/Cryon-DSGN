@@ -1,0 +1,55 @@
+/* Cryon DSGN — Analisi risparmio */
+#risparmio { overflow: auto; padding: 88px 4vw 60px; background: rgba(22,19,20,.92); }
+.rs-in { grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); }
+#risparmio .cf-campi { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+#risparmio .cf-campi input, #risparmio .cf-campi select { min-width: 0; width: 100%; }
+#barra .navb, #barra .chip { white-space: nowrap; }
+#barra .briciole { min-width: 0; overflow: hidden; white-space: nowrap; }
+@media (max-width: 1600px) { #orologio { display: none !important; } }
+.rs-cerca { position: relative; display: block; }
+.rs-cerca input { width: 100%; }
+.rs-luoghi { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 5; background: var(--bg2); border: 1px solid var(--line2); border-radius: 10px; padding: 4px; display: grid; max-height: 280px; overflow: auto; box-shadow: 0 14px 40px rgba(0,0,0,.45); }
+.rs-luoghi[hidden] { display: none; }
+.rs-luoghi button { text-align: left; background: none; border: 0; border-radius: 7px; padding: 8px 10px; color: var(--ink); font-size: 13.5px; cursor: pointer; }
+.rs-luoghi button:hover { background: var(--bg3); }
+.rs-luoghi button span, .rs-luoghi p { color: var(--ink2); font-size: 12px; margin: 6px 10px; }
+.rs-clima { font-size: 13px; line-height: 1.5; }
+.rs-macchine { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.rs-m { min-width: 0; }
+.rs-m { background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 12px; align-content: start; }
+.rs-mt { display: flex; gap: 10px; align-items: center; }
+.rs-mt select { flex: 1; min-width: 0; background: var(--bg2); border: 1px solid var(--line2); border-radius: 9px; padding: 8px 10px; color: var(--ink); font-size: 13.5px; }
+.rs-let { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; font-family: "Plex Mono", monospace; font-size: 13px; background: var(--bg3); color: var(--ink); }
+.rs-let.B { background: var(--accent); color: #1a1405; }
+.rs-sch { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; border-top: 1px solid var(--line); padding-top: 10px; margin: 0; }
+.rs-sch div { display: grid; gap: 1px; }
+.rs-sch span { font-size: 10.5px; color: var(--muted); font-family: "Plex Mono", monospace; text-transform: uppercase; letter-spacing: .06em; }
+.rs-sch b { font-size: 12.5px; font-weight: 500; }
+.rs-az { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 16px 0 6px; }
+.rs-vc { display: flex; gap: 7px; align-items: center; font-size: 12.5px; color: var(--ink2); margin-left: auto; }
+.rs-vc[hidden] { display: none; }
+.rs-esito { margin: 18px 0 12px; padding: 18px 20px; border-radius: var(--r); border: 1px solid var(--accent); background: linear-gradient(135deg, rgba(242,156,31,.12), rgba(242,156,31,.02)); }
+.rs-big { display: flex; align-items: baseline; gap: 8px 10px; flex-wrap: wrap; margin: 8px 0 6px; }
+.rs-big b { font-family: "Doto", monospace; font-weight: 800; font-size: clamp(30px, 4vw, 48px); line-height: 1; white-space: nowrap; }
+.rs-big span { color: var(--ink2); font-size: 14px; margin-right: 10px; }
+.rs-big i { font-style: normal; font-family: "Plex Mono", monospace; color: var(--ok); border: 1px solid var(--ok); border-radius: 99px; padding: 3px 10px; font-size: 13px; }
+.rs-esito p { margin: 4px 0 0; font-size: 12.5px; }
+.rs-tab { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 14px; }
+.rs-tab th, .rs-tab td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+.rs-tab th:first-child, .rs-tab td:first-child { text-align: left; color: var(--ink2); }
+.rs-tab th { font-weight: 500; font-size: 12.5px; }
+.rs-tab tr.forte td:not(:first-child) { font-weight: 600; }
+.rs-tab tr.avv td { color: #E8826B; }
+.rs-graf { background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.rs-graf svg { width: 100%; height: auto; display: block; margin-top: 8px; }
+.rs-graf text { fill: var(--ink2); font-size: 11px; text-anchor: middle; font-family: "Plex Mono", monospace; }
+.rs-graf .ba { fill: #8A8384; } .rs-graf .bb { fill: var(--accent); }
+.rs-graf .tl { fill: none; stroke: var(--cool); stroke-width: 1.6; } .rs-graf circle { fill: var(--cool); }
+.rs-graf .ka { color: #8A8384; } .rs-graf .kb { color: var(--accent); } .rs-graf .kt { color: var(--cool); }
+.rs-ip { margin-top: 12px; font-size: 12.5px; color: var(--ink2); }
+.rs-ip summary { cursor: pointer; color: var(--ink); }
+.rs-ip li { margin: 5px 0; line-height: 1.45; }
+#risparmio [hidden] { display: none !important; }
+@media (max-width: 1100px) { .rs-macchine { grid-template-columns: 1fr; } }
+@media (max-width: 1000px) { #risparmio { padding: 80px 16px 40px; } }
+#risparmio .cf-chk input { width: auto; }

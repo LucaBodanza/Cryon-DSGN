@@ -2,6 +2,7 @@
 import { avviaScena } from './scena.js';
 import { Libro } from './libro.js';
 import { avviaConfiguratore, apriConfiguratore } from './configuratore.js';
+import { avviaRisparmio, apriRisparmio } from './risparmio.js';
 import { avviaListino, apriEditor, datiListino } from './listino.js';
 
 const $ = s => document.querySelector(s);
@@ -59,6 +60,7 @@ function briciole() {
   if (S.vista === 'sfoglia') p.push(`<span>${S.sfFonte?.sotto ? esc(S.sfFonte.sotto) : 'Catalogo completo'}</span>`);
   if (S.vista === 'sotto') p.push('<span>Sotto-cataloghi</span>');
   if (S.vista === 'config') p.push('<b>Configuratore</b>');
+  if (S.vista === 'risparmio') p.push('<b>Analisi risparmio</b>');
   b.innerHTML = p.join('<span class="muted">/</span>');
 }
 
@@ -571,6 +573,8 @@ function vita() {   // la finestra-app tiene acceso il server; alla chiusura lo 
   avviaMenu();
   Promise.all([svg('logo'), svg('pittogramma')]).then(([l, p]) => avviaListino({ vai, toast, svgLogo: l, svgPicto: p }));
   for (const id of ['#hConfig', '#nConfig']) $(id).onclick = () => apriConfiguratore(S.scelte);
+  avviaRisparmio({ WEB, vai, toast });
+  for (const id of ['#hRisp', '#nRisp']) $(id).onclick = () => apriRisparmio();
   sfogliaEventi(); stato(); orologio(); setInterval(orologio, 30000); vita();
   await libreria();
 })();

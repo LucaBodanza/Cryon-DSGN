@@ -46,6 +46,12 @@ export async function datiListino() {
   try { PUB = (await window.CRYON_ACCESSO?.prezzi?.()) || {}; } catch (e) { PUB = {}; }
   return D;
 }
+// prezzo di listino di un codice Procryon (con le modifiche/pubblicazioni valide per chi guarda); null se non c'è
+export function prezzoUnita(codice) {
+  if (!D) return null;
+  for (const s of D.serie) for (const G of Object.values(s.gas)) for (const r of G.righe) for (const v of ['S', 'C']) if (r[v]?.c === codice) return r[v].p == null ? null : prezzo(kU(codice), r[v].p);
+  return null;
+}
 // modo 'vista' = listino da consultare e scaricare; 'modifica' = prezzi modificabili (solo chi ha il permesso)
 export async function apriEditor(serieId = null, gas = 'tutti', modo = 'modifica') {
   if (!(await datiListino())) return H.toast?.('Dati del listino non disponibili in questa versione');

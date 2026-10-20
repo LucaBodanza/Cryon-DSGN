@@ -33,7 +33,7 @@ async function mazzo(acc, C) {
   else {
     const p = acc.p || {};
     metti('base'); metti(`prezzi:${acc.t}`);
-    if (p.conf) metti('conf');
+    if (p.conf || p.risp) metti('conf');
     if (p.listino) metti('listino');
     for (const n of Object.keys(K)) if (n.startsWith('cat:') && (acc.t === 'client' || (p.cat || []).includes(n.slice(4)))) metti(n);
   }
@@ -124,7 +124,7 @@ function disegna() {
   const riga = (a, i) => `<div class="im-acc" data-id="${esc(a.id)}">
     <div class="im-chi">${avatar(a, i)}<div><b>${esc(a.n)}</b><span class="lab">${esc(RUOLI[a.t])}${a.r ? ' · ' + esc(a.r) : ''}${a.att ? ' · da attivare' : ''}</span></div>
       ${dev && a.id !== API.s.id ? `<span class="im-az"><button class="btn ghost mini" data-pw="${esc(a.id)}">Reimposta password</button><button class="btn ghost mini rosso" data-rev="${esc(a.id)}">Revoca</button></span>` : ''}</div>
-    ${a.t === 'client' || a.t === 'select' ? `<div class="im-perm">${interruttore(a, 'conf', 'Configuratore')}${interruttore(a, 'listino', 'Listino prezzi')}${interruttore(a, 'pdf', 'Scarica PDF')}</div>` : ''}
+    ${a.t === 'client' || a.t === 'select' ? `<div class="im-perm">${interruttore(a, 'conf', 'Configuratore')}${interruttore(a, 'risp', 'Analisi risparmio')}${interruttore(a, 'listino', 'Listino prezzi')}${interruttore(a, 'pdf', 'Scarica PDF')}</div>` : ''}
     ${a.t === 'select' ? sceltaCataloghi(a) : ''}</div>`;
   el.innerHTML = `<div class="im-in">
     <div class="im-testa"><div><span class="pill cool">vDragon 5</span><h2>Impostazioni</h2><p class="lab">${esc(API.nome)} · ${esc(RUOLI[API.tipo])} · Cryon DSGN è di Procryon</p></div>
