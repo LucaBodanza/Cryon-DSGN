@@ -266,7 +266,7 @@ function ipotesi(X) {
   const L = [`Clima: ${X.fonteClima}, ${X.luogo}. Ogni ora dell'anno ${X.anno} usa la temperatura media di quella stessa ora negli anni indicati.`,
     `Carico frigorifero costante nelle ore di lavoro: ${num(X.Qr, 1)} kW × saturazione ${num(X.sat)} % = ${num(X.Q, 1)} kW. Fuori orario le macchine sono spente.`,
     'Free cooling (doppia batteria): resa piena con aria esterna ≤ acqua in uscita − ΔT di targa, proporzionale fino alla temperatura dell\'acqua in uscita, nulla sopra.',
-    'Compressori: potenza dalla matrice di resa Procryon (acqua in uscita × aria esterna; se la matrice parte da un'aria più alta si prolunga la tendenza fino a 15 °C, sotto 15 °C e sopra il massimo di catalogo si tiene il bordo). Parzializzazione a gradini (1/n compressori) con curva tarata sull\'ESEER di catalogo; sotto il primo gradino funzionamento on/off con coefficiente di degrado 0,9 (EN 14825).',
+    'Compressori: potenza dalla matrice di resa Procryon (acqua in uscita × aria esterna; se la matrice parte da un\'aria più alta si prolunga la tendenza fino a 15 °C, sotto 15 °C e sopra il massimo di catalogo si tiene il bordo). Parzializzazione a gradini (1/n compressori) con curva tarata sull\'ESEER di catalogo; sotto il primo gradino funzionamento on/off con coefficiente di degrado 0,9 (EN 14825).',
     'Ventilatori EC brushless: in solo free cooling modulano con la richiesta (potenza proporzionale al cubo della velocità, minimo 15 %). Potenza dei ventilatori stimata dalla gamma Procryon dove non indicata.',
     'Fattore di resa/consumo per macchina: moltiplica il consumo calcolato (100 % = catalogo).',
     'Pompe, ausiliari e perdite d\'impianto non considerati (uguali per le due macchine).'];

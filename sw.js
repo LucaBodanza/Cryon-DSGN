@@ -5,7 +5,7 @@
 // - vDragon 5 (true): tutto ciò che sta in cat/ e dati/ è cifrato (AES-256-GCM a blocchi da 256 KB) e ogni file
 //   dice nell'intestazione con quale chiave è chiuso. Qui si decifra al volo con le chiavi dell'account (IndexedDB).
 //   Nelle cache resta tutto cifrato. File senza chiave per quell'account → 403.
-const VERSIONE = '1.1.0-2026.10.10-6236acd306';
+const VERSIONE = '1.1.0-2026.10.11-d18f727bd9';
 const CIFRATA = true;
 const GUSCIO = 'cryon-guscio-' + VERSIONE, CAT = 'cryon-cat-v1';
 const FILE = ["index.html", "manifest.webmanifest", "dati/cataloghi.json", "dati/configuratore.json", "dati/listino_dati.json", "web/accesso.css", "web/accesso.js", "web/app.css", "web/app.js", "web/configuratore.js", "web/font/Doto-Bold.ttf", "web/font/IBMPlexMono-Medium.woff2", "web/font/IBMPlexMono-Regular.woff2", "web/font/Inter-Regular.ttf", "web/font/Inter-SemiBold.ttf", "web/img/icona_192.png", "web/img/icona_512.png", "web/img/logo.svg", "web/img/pittogramma.svg", "web/impostazioni.js", "web/index.html", "web/libro.js", "web/listino.css", "web/listino.js", "web/listino_render.js", "web/risparmio.css", "web/risparmio.js", "web/scena.js", "web/vendor/RoomEnvironment.js", "web/vendor/SVGLoader.js", "web/vendor/pdf-lib.esm.min.js", "web/vendor/pdf.min.mjs", "web/vendor/pdf.worker.min.mjs", "web/vendor/three.module.min.js"];

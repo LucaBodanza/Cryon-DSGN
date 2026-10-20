@@ -2,7 +2,6 @@
 import { avviaScena } from './scena.js';
 import { Libro } from './libro.js';
 import { avviaConfiguratore, apriConfiguratore } from './configuratore.js';
-import { avviaRisparmio, apriRisparmio } from './risparmio.js';
 import { avviaListino, apriEditor, datiListino } from './listino.js';
 
 const $ = s => document.querySelector(s);
@@ -573,8 +572,10 @@ function vita() {   // la finestra-app tiene acceso il server; alla chiusura lo 
   avviaMenu();
   Promise.all([svg('logo'), svg('pittogramma')]).then(([l, p]) => avviaListino({ vai, toast, svgLogo: l, svgPicto: p }));
   for (const id of ['#hConfig', '#nConfig']) $(id).onclick = () => apriConfiguratore(S.scelte);
-  avviaRisparmio({ WEB, vai, toast });
-  for (const id of ['#hRisp', '#nRisp']) $(id).onclick = () => apriRisparmio();
+  import('./risparmio.js').then(m => {           // modulo a parte: se non si carica, il resto dell'app funziona lo stesso
+    m.avviaRisparmio({ WEB, vai, toast });
+    for (const id of ['#hRisp', '#nRisp']) $(id).onclick = () => m.apriRisparmio();
+  }).catch(e => { console.warn('analisi risparmio non disponibile', e); for (const id of ['#hRisp', '#nRisp']) $(id).onclick = () => toast('Analisi risparmio non disponibile: ricarica la pagina'); });
   sfogliaEventi(); stato(); orologio(); setInterval(orologio, 30000); vita();
   await libreria();
 })();
