@@ -257,6 +257,16 @@ export async function esci() {
   try { navigator.serviceWorker.controller?.postMessage({ tipo: 'esci' }); } catch (e) { /* niente */ }
   location.reload();
 }
+// l'interfaccia salvata non parte (versione a metà): si buttano le copie salvate dell'interfaccia e si riprende tutto dal sito
+async function riparaApp() {
+  let gia = false; try { gia = sessionStorage.getItem('cryon-ripara') === '1'; sessionStorage.setItem('cryon-ripara', '1'); } catch (e) { /* niente */ }
+  if (!gia) {
+    try { for (const k of await caches.keys()) if (k.startsWith('cryon-guscio-')) await caches.delete(k); } catch (e) { /* niente */ }
+    try { for (const r of await navigator.serviceWorker.getRegistrations()) await r.update(); } catch (e) { /* niente */ }
+    location.reload(); return;
+  }
+  blocco('L\'app non è riuscita a partire. Chiudi tutte le schede di Cryon DSGN e riapri il sito.');
+}
 function blocco(msg) {
   document.body.insertAdjacentHTML('beforeend', `<section id="accesso" class="su"><div class="ac-scelta"><h1>CRYON <span class="acc">DSGN</span></h1>
     <p class="ac-err">${esc(msg)}</p><p class="lab">Apri il sito con Chrome, Edge o Safari aggiornati, non in finestra anonima.</p></div></section>`);
@@ -272,7 +282,15 @@ async function leggiAccount() {
 
 (async function avvio() {
   if (!('serviceWorker' in navigator) || !window.crypto?.subtle || !window.indexedDB) return blocco('Questo browser non può aprire Cryon DSGN riservato.');
-  navigator.serviceWorker.register('sw.js').catch(e => console.warn('service worker', e));
+  // aggiornamenti: la versione nuova del service worker prende subito il posto della vecchia e la pagina si ricarica una volta
+  const avevaSw = !!navigator.serviceWorker.controller; let ricaricata = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (avevaSw && !ricaricata) { ricaricata = true; location.reload(); } });
+  navigator.serviceWorker.register('sw.js').then(r => {
+    const vai = w => w && w.postMessage({ tipo: 'aggiorna' });
+    vai(r.waiting);
+    r.addEventListener('updatefound', () => { const w = r.installing; w?.addEventListener('statechange', () => { if (w.state === 'installed') vai(w); }); });
+    r.update().catch(() => {});
+  }).catch(e => console.warn('service worker', e));
   const A = await leggiAccount();
   if (!A) return blocco('Non riesco a leggere gli account: controlla la connessione e ricarica.');
   let s = null;
@@ -287,6 +305,7 @@ async function leggiAccount() {
   navigator.serviceWorker.controller.postMessage({ tipo: 'entra' });
   const API = permessi(s, acc);
   window.CRYON_ACCESSO = API;
-  await import('./app.js');
+  try { await import('./app.js'); } catch (e) { console.error(e); return riparaApp(); }
+  try { sessionStorage.removeItem('cryon-ripara'); } catch (e) { /* niente */ }
   const attendi = setInterval(() => { if (document.querySelector('#barra .logo svg')) { clearInterval(attendi); profiloInBarra(API); strumenti(API); } }, 200);
 })();

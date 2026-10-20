@@ -121,7 +121,12 @@ function kParz(M, plr) {
   return (1 + M.a * (1 - m)) * Math.max(0.05, 1 - CD * (1 - plr / m));
 }
 // stima della potenza dei ventilatori (kW per ventilatore) finché Procryon non dà i dati di targa
-const ventStima = u => Math.min(2.2, Math.max(0.12, 0.085 * u.pw / Math.max(1, u.nv || 1)));
+// dalle offerte Aytek/Itech 2026: Ø630 ≈ 0,65 kW a ~27 kW frigo per ventilatore (YNTC 25); Ø800 ≈ 1,8–2,0 kW a 51–76 kW per ventilatore (NTC 100, NTC 260/310)
+function ventKw(kwPerVent) {
+  if (kwPerVent <= 27) return Math.max(0.25, 0.65 * kwPerVent / 27);
+  return Math.min(2.0, 0.65 + (kwPerVent - 27) * 1.2 / 18);
+}
+const ventStima = u => ventKw(u.kw / Math.max(1, u.nv || 1));
 
 // costruisce la macchina di calcolo dallo stato del pannello
 function macchina(k) {
@@ -142,7 +147,7 @@ function macchina(k) {
   const M = { k, nome: x.nome || 'Macchina ' + k, procryon: false, u: null, ref, sk: x.kw / ref.kw, sp: x.pw / ref.pw, kw: x.kw, pw: x.pw, eer: x.kw / x.pw, es: +x.es || null,
     nc: Math.max(1, +x.nc || ref.nc || 1), fc, fcdt: +x.fcdt || 8, nv: Math.max(1, Math.round((ref.nv || 1) * x.kw / ref.kw)), gas: x.gas || '', dim: null };
   M.nfc = fc ? M.nv : 0; M.condivisi = true;
-  M.pv = Math.min(2.2, Math.max(0.12, 0.085 * x.pw / M.nv)); M.pvTot = P.pfan != null ? P.pfan : null;
+  M.pv = ventKw(x.kw / M.nv); M.pvTot = P.pfan != null ? P.pfan : null;
   M.fatt = (P.fatt || 100) / 100; M.prezzo = P.prezzo;
   taraESEER(M); return M;
 }
@@ -198,7 +203,7 @@ function pannello(k) {
   const M = P.fonte === 'p' ? macchina(k) : null;
   const campo = (lab, key, v, ph = '') => `<label>${lab}<input data-m="${key}" inputmode="decimal" value="${v ?? ''}" placeholder="${esc(ph)}"></label>`;
   const fcSi = P.fonte === 'p' ? !!M?.fc : +P.man.fc > 0;
-  const stimaV = P.fonte === 'p' && M ? M.nfc * M.pv : (P.man.pw ? 0.085 * P.man.pw : null);
+  const stimaV = P.fonte === 'p' && M ? M.nfc * M.pv : (P.man.kw ? ventKw(P.man.kw / Math.max(1, Math.round(P.man.kw / 45))) * Math.max(1, Math.round(P.man.kw / 45)) : null);
   el.innerHTML = `<div class="rs-mt"><b class="rs-let ${k}">${k}</b><select data-p="fonte"><option value="p" ${P.fonte === 'p' ? 'selected' : ''}>Procryon</option><option value="x" ${P.fonte === 'x' ? 'selected' : ''}>Altro costruttore (dati a mano)</option></select></div>
     <div class="cf-campi">
     ${P.fonte === 'p' ? `<label>Serie<select data-p="serie">${serie.map(s => `<option value="${s.id}" ${s.id === P.serie ? 'selected' : ''}>${esc(s.nome)}${s.freecooling ? ' · free cooling' : ''}</option>`).join('')}</select></label>
@@ -267,7 +272,7 @@ function ipotesi(X) {
     `Carico frigorifero costante nelle ore di lavoro: ${num(X.Qr, 1)} kW × saturazione ${num(X.sat)} % = ${num(X.Q, 1)} kW. Fuori orario le macchine sono spente.`,
     'Free cooling (doppia batteria): resa piena con aria esterna ≤ acqua in uscita − ΔT di targa, proporzionale fino alla temperatura dell\'acqua in uscita, nulla sopra.',
     'Compressori: potenza dalla matrice di resa Procryon (acqua in uscita × aria esterna; se la matrice parte da un\'aria più alta si prolunga la tendenza fino a 15 °C, sotto 15 °C e sopra il massimo di catalogo si tiene il bordo). Parzializzazione a gradini (1/n compressori) con curva tarata sull\'ESEER di catalogo; sotto il primo gradino funzionamento on/off con coefficiente di degrado 0,9 (EN 14825).',
-    'Ventilatori EC brushless: in solo free cooling modulano con la richiesta (potenza proporzionale al cubo della velocità, minimo 15 %). Potenza dei ventilatori stimata dalla gamma Procryon dove non indicata.',
+    'Ventilatori EC brushless: in solo free cooling modulano con la richiesta (potenza proporzionale al cubo della velocità, minimo 15 %). Potenza dei ventilatori, dove non indicata, dai dati Aytek/Itech: Ø630 ≈ 0,65 kW, Ø800 ≈ 1,8–2,0 kW per ventilatore.',
     'Fattore di resa/consumo per macchina: moltiplica il consumo calcolato (100 % = catalogo).',
     'Pompe, ausiliari e perdite d\'impianto non considerati (uguali per le due macchine).'];
   for (const M of [X.MA, X.MB]) {
