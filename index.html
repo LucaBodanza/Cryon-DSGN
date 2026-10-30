@@ -22,6 +22,12 @@
 <body>
 <script>window.CRYON_WEB = { versione: "1.1.0", dati: "2026.10.12" };
 </script>
+<div id="avvisoSviluppo" role="status" style="position:fixed;left:0;right:0;top:0;z-index:60;display:flex;gap:12px;align-items:center;justify-content:center;padding:8px 14px;background:#262122;border-bottom:1px solid #F29C1F;color:#F7F5F4;font:12.5px/1.35 Inter,system-ui,sans-serif">
+<span style="font-family:'Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#F29C1F;white-space:nowrap">In sviluppo</span>
+<span>Cryon DSGN resta attivo e utilizzabile. Lo sviluppo di nuove funzioni è momentaneamente sospeso.</span>
+<button type="button" aria-label="Chiudi avviso" onclick="try{sessionStorage.setItem('dsgn.avviso','1')}catch(e){};this.parentNode.remove()" style="background:none;border:0;color:#A8A3A4;font-size:18px;line-height:1;padding:0 4px;cursor:pointer">&times;</button>
+</div>
+<script>try{if(sessionStorage.getItem('dsgn.avviso')==='1'){var a=document.getElementById('avvisoSviluppo');if(a)a.remove()}}catch(e){}</script>
 <canvas id="scena"></canvas>
 <div id="grana"></div>
 
@@ -88,7 +94,7 @@
   <div class="li-in">
     <span class="pill cool">Listino prezzi 2026 · Price list</span>
     <h2>Listino prezzi Procryon</h2>
-    <p class="en">Prezzi in euro, IVA esclusa · versione provvisoria.<br><span class="muted">Il listino completo raccoglie tutte le famiglie; ogni listino di serie ha la sigla del suo catalogo (PRO8-A, PRO5-A, …).</span></p>
+    <p class="en">Prezzi in euro, IVA esclusa.<br><span class="muted">Il listino completo raccoglie tutte le famiglie; ogni listino di serie ha la sigla del suo catalogo (PRO8-A, PRO5-A, …).</span></p>
     <div id="liCorpo"></div>
   </div>
 </section>

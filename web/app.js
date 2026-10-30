@@ -207,8 +207,7 @@ function schedaInfo() {
         <button class="tile" id="aSotto"><span class="ic">${ICON.griglia}</span><span class="go">→</span><h3>Sotto-cataloghi</h3><p>${m.sotto.length} schede modello × gas, ognuna in PDF</p></button>
       </div>
       <div class="secondarie"><a class="btn ghost" href="cat/${encodeURI(m.slug)}/${encodeURI(m.file)}" target="_blank">Apri PDF ↗</a>
-        <button class="btn ghost" id="aCartella">Mostra nella cartella</button><button class="btn ghost" id="aRigenera">Rigenera</button>${WEB ? '<button class="btn ghost" id="aOffline">Offline…</button>' : ''}</div>
-      ${m.provvisoria ? `<div class="avviso">• Versione provvisoria · codici in verifica${WEB ? '' : ' con Riccardo'}</div>` : ''}`;
+        <button class="btn ghost" id="aCartella">Mostra nella cartella</button><button class="btn ghost" id="aRigenera">Rigenera</button>${WEB ? '<button class="btn ghost" id="aOffline">Offline…</button>' : ''}</div>`;
   } else {
     corpo = `<div class="stat"><div><b>${c.configurazioni}</b><span>configurazioni</span></div><div><b>${kw(c.kw?.[0])}</b><span>kW min</span></div><div><b>${kw(c.kw?.[1])}</b><span>kW max</span></div><div><b>—</b><span>pagine</span></div></div>
       <div class="azioni"><button class="tile" id="aGenera"><span class="ic">${ICON.libro}</span><span class="go">→</span><h3>Genera il catalogo</h3><p>Catalogo completo + sotto-cataloghi in PDF (qualche minuto)</p></button></div>`;

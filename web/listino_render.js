@@ -23,7 +23,7 @@
     return `<section class="lr-cop"><div class="dots"></div><div class="logo">${o.logo || ''}</div><div class="picto">${o.picto || ''}</div>
       <div class="in"><div class="num">${s1 ? esc(s1.numero) : '00'}</div><div class="lab">Listino prezzi / Price list · ${esc(D.versione)}</div>
       <h1>${sg ? 'Listino ' + esc(sg) : s1 ? 'Listino ' + esc(s1.nome) : 'Listino prezzi 2026'}</h1><div class="sub">${s1 ? esc(s1.sotto) + (sg ? ' · ' + esc(o.gas) : '') : 'Refrigeratori d\'acqua, free cooling e dry cooler Procryon'}</div>
-      <div class="meta">${(sg ? [o.gas] : gas).map(g => `<span class="pill">${esc(g)}</span>`).join('')}<span class="pill acc">Versione provvisoria</span></div></div>
+      <div class="meta">${(sg ? [o.gas] : gas).map(g => `<span class="pill">${esc(g)}</span>`).join('')}</div></div>
       <div class="claim">Prezzi in euro, IVA esclusa<br>www.procryon.com</div></section>`;
   }
 
@@ -35,7 +35,7 @@
       <div class="lr-note"><h4>Condizioni del listino</h4><ul><li>Prezzi in euro, IVA esclusa, per singola unità, franco nostro stabilimento salvo diverso accordo.</li>
       <li>Ogni serie è divisa per refrigerante. Optional in % sul prezzo dell'unità (o in € dove indicato), per gruppo di taglie A–D.</li>
       <li>P.M. = prezzo su richiesta. Esecuzioni speciali X (Configure To Order): quotazione dedicata.</li>
-      <li>Procryon si riserva di modificare prezzi e caratteristiche senza preavviso. Versione provvisoria.</li></ul></div></section>`;
+      <li>Procryon si riserva di modificare prezzi e caratteristiche senza preavviso.</li></ul></div></section>`;
   }
 
   function divisore(c) {
