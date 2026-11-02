@@ -23,6 +23,27 @@ const api = async (u, body) => {
 const SVG = {};
 async function svg(nome) { if (!SVG[nome]) SVG[nome] = await (await fetch(`web/img/${nome}.svg`)).text(); return SVG[nome]; }
 function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('su'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('su'), 2600); }
+
+// scarica un PDF SEMPRE in chiaro: passa dall'app (che lo decifra) e lo salva come file. Il "Salva con nome" del browser
+// sul link diretto può scaricare la copia cifrata del server, che poi non si apre.
+async function scaricaPdf(url, nome, el) {
+  const lab = el ? el.textContent : '';
+  const fine = () => { if (el) { el.disabled = false; el.textContent = lab; } };
+  try {
+    if (el) { el.disabled = true; el.textContent = 'Scarico…'; }
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status === 403 ? 'accesso non valido: esci, rientra e riprova' : `errore ${r.status}`);
+    const b = await r.blob();
+    if (new TextDecoder().decode(await b.slice(0, 5).arrayBuffer()) !== '%PDF-') throw new Error('file non leggibile: ricarica la pagina (Ctrl+F5) e riprova');
+    const n = nome || decodeURIComponent(String(url).split('?')[0].split('/').pop() || 'Procryon.pdf');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([b], { type: 'application/pdf' })); a.download = n.split('/').pop();
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    toast('PDF scaricato: ' + a.download);
+  } catch (e) { toast('Download non riuscito: ' + e.message); }
+  finally { fine(); }
+}
 const ICON = {
   libro: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7c4-2 8-2 12 1v18c-4-3-8-3-12-1z"/><path d="M28 7c-4-2-8-2-12 1v18c4-3 8-3 12-1z"/></svg>',
   griglia: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="10" height="10" rx="2"/><rect x="18" y="4" width="10" height="10" rx="2"/><rect x="4" y="18" width="10" height="10" rx="2"/><rect x="18" y="18" width="10" height="10" rx="2"/></svg>',
@@ -206,7 +227,7 @@ function schedaInfo() {
         <button class="tile" id="aSfoglia"><span class="ic">${ICON.libro}</span><span class="go">→</span><h3>Sfoglia il catalogo</h3><p>${m.pagine} pagine · sfoglio a libro, indice, ricerca per codice</p></button>
         <button class="tile" id="aSotto"><span class="ic">${ICON.griglia}</span><span class="go">→</span><h3>Sotto-cataloghi</h3><p>${m.sotto.length} schede modello × gas, ognuna in PDF</p></button>
       </div>
-      <div class="secondarie"><a class="btn ghost" href="cat/${encodeURI(m.slug)}/${encodeURI(m.file)}" target="_blank">Apri PDF ↗</a>
+      <div class="secondarie"><button class="btn ghost" id="aScarica">Scarica PDF</button>
         <button class="btn ghost" id="aCartella">Mostra nella cartella</button><button class="btn ghost" id="aRigenera">Rigenera</button>${WEB ? '<button class="btn ghost" id="aOffline">Offline…</button>' : ''}</div>`;
   } else {
     corpo = `<div class="stat"><div><b>${c.configurazioni}</b><span>configurazioni</span></div><div><b>${kw(c.kw?.[0])}</b><span>kW min</span></div><div><b>${kw(c.kw?.[1])}</b><span>kW max</span></div><div><b>—</b><span>pagine</span></div></div>
@@ -218,6 +239,7 @@ function schedaInfo() {
     <div class="chips">${gas}${c.interno ? `<span class="pill">${esc(c.interno)}</span>` : ''}</div>${corpo}<div id="lavoro"></div>`;
   $('#aSfoglia')?.addEventListener('click', () => sfoglia({ url: `cat/${encodeURI(m.slug)}/${encodeURI(m.file)}`, titolo: c.nome }));
   $('#aSotto')?.addEventListener('click', sotto);
+  $('#aScarica')?.addEventListener('click', e => scaricaPdf(`cat/${encodeURI(m.slug)}/${encodeURI(m.file)}`, m.file, e.currentTarget));
   $('#aCartella')?.addEventListener('click', () => api('/api/apri', { percorso: `${m.slug}/${m.file}` }).catch(e => toast(e.message)));
   $('#aRigenera')?.addEventListener('click', () => generaCat(c));
   if (WEB) offline(c);
@@ -288,7 +310,7 @@ async function sfoglia({ url, titolo, sotto = null, pagina = 1, tipo = null }) {
   vai('sfoglia');
   const m = tipo ? { indice: [], sotto: [] } : S.cur.manifest;
   $('#sfTit').innerHTML = `${esc(titolo)}<span>${tipo || (sotto ? 'sotto-catalogo' : 'catalogo completo')}</span>`;
-  $('#sfPdf').href = url; $('#sfCerca').value = '';
+  $('#sfPdf').onclick = e => scaricaPdf(url, null, e.currentTarget); $('#sfCerca').value = '';
   $('#sfCarica').classList.remove('via');
   const sel = $('#sfIndice');
   sel.innerHTML = sotto ? `<option value="">Sotto-catalogo ${esc(sotto)}</option>` :
@@ -383,12 +405,13 @@ function disegnaGriglia() {
       <div class="ft">${x.foto ? `<img src="${base}/html/${encodeURI(x.foto)}" alt="" loading="lazy">` : ''}</div>
       <div class="cp"><div class="cd">${esc(x.codice)}</div>
         <div class="rg"><div><b>${kw(x.kw)}</b><small>kW</small></div><span>${x.eer == null ? "" : `EER ${num(x.eer, 2)} · `}${x.pagine} pag.</span></div></div>
-      <div class="az"><button data-a="sf">Sfoglia</button><a href="${base}/${encodeURI(x.file)}" target="_blank">PDF</a><button data-a="cat">p. ${x.pagina_catalogo}</button></div>
+      <div class="az"><button data-a="sf">Sfoglia</button><button data-a="dl">Scarica</button><button data-a="cat">p. ${x.pagina_catalogo}</button></div>
     </div>`).join('') : '<div class="vuoto">Nessuna configurazione con questi filtri.</div>';
   $('#soGriglia').querySelectorAll('.carta').forEach(el => {
     const x = m.sotto.find(s => s.codice === el.dataset.c);
     el.addEventListener('click', e => {
       const a = e.target.closest('[data-a]')?.dataset.a;
+      if (a === 'dl') return scaricaPdf(`${base}/${encodeURI(x.file)}`, x.file, e.target.closest('[data-a]'));
       if (e.target.closest('a')) return;
       if (a === 'cat') return sfoglia({ url: `${base}/${encodeURI(m.file)}`, titolo: S.cur.nome, pagina: x.pagina_catalogo });
       sfoglia({ url: `${base}/${encodeURI(x.file)}`, titolo: x.codice, sotto: x.codice });
